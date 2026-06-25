@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <title>My Keychains</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="manifest" href="manifest.json" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="apple-mobile-web-app-title" content="Keychains" />
+  </head>
+  <body>
+    <div id="lock-screen" class="view active">
+      <div class="lock-container">
+        <div class="heart-icon">💝</div>
+        <h2>Enter Private Passcode</h2>
+        <input
+          type="password"
+          id="passcode-input"
+          pattern="[0-9]*"
+          inputmode="numeric"
+          placeholder="••••"
+          maxlength="4"
+        />
+        <button id="unlock-btn">Unlock Collection</button>
+        <p id="lock-error" class="error-text"></p>
+      </div>
+    </div>
+
+    <div id="main-app" class="hidden">
+      <header>
+        <h1>My Keychains</h1>
+        <button id="nav-add-btn" class="circle-btn">+</button>
+      </header>
+
+      <main id="gallery-view" class="view-content">
+        <div id="loading-spinner">Loading collection...</div>
+        <div id="keychain-grid" class="grid"></div>
+      </main>
+
+      <div id="add-view" class="view-content hidden">
+        <div class="form-container">
+          <h2>Add New Keychain</h2>
+          <form id="keychain-form">
+            <label>Keychain Name</label>
+            <input
+              type="text"
+              id="form-name"
+              required
+              placeholder="e.g., Grand Canyon Boot"
+            />
+
+            <label>Location Found</label>
+            <input
+              type="text"
+              id="form-location"
+              required
+              placeholder="e.g., Arizona, USA"
+            />
+
+            <label>Date Acquired</label>
+            <input type="date" id="form-date" />
+
+            <label>Photo</label>
+            <input type="file" id="form-image" accept="image/*" required />
+            <div id="image-preview"></div>
+
+            <label>Memories & Notes</label>
+            <textarea
+              id="form-notes"
+              rows="3"
+              placeholder="Write a sweet memory..."
+            ></textarea>
+
+            <div class="form-buttons">
+              <button type="button" id="form-cancel-btn" class="secondary-btn">
+                Cancel
+              </button>
+              <button type="submit" id="form-submit-btn" class="primary-btn">
+                Save to Catalog
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>

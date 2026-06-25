@@ -1,0 +1,21 @@
+{
+  "short_name": "Keychains",
+  "name": "Keychain Memory Vault",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "index.html",
+  "background_color": "#fcfaf7",
+  "theme_color": "#e2b4bd",
+  "display": "standalone",
+  "orientation": "portrait"
+}
