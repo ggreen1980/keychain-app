@@ -422,6 +422,51 @@ input[type="file"] {
     opacity: 1;
   }
 }
+/* App Controls Bar */
+.app-controls-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  background: #fcfcfc;
+  border-bottom: 1px solid #eaeaea;
+  margin-bottom: 15px;
+}
+
+.text-link-btn {
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.text-link-btn:hover {
+  color: #333;
+}
+
+.logout-btn {
+  background: #f7e6e6;
+  border: 1px solid #f0c5c5;
+  color: #c93b3b;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background: #f0d0d0;
+}
+
+/* Helper styles for modal inputs if not already present */
+.form-input {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+}
 
 @media (min-width: 600px) {
   .gallery-grid {
