@@ -48,43 +48,38 @@
       <div id="add-view" class="view-content hidden">
         <div class="form-container">
           <h2>Add New Keychain</h2>
-          <form id="keychain-form">
-            <label>Keychain Name</label>
-            <input
-              type="text"
-              id="form-name"
-              placeholder="e.g., Grand Canyon Boot"
-            />
+        <form id="keychain-form">
+            <div class="form-group">
+                <label for="form-name">Keychain Name</label>
+                <input type="text" id="form-name" placeholder="e.g., Grand Canyon Boot">
+            </div>
 
-            <label>Location Found</label>
-            <input
-              type="text"
-              id="form-location"
-              placeholder="e.g., Arizona, USA"
-            />
+            <div class="form-group">
+                <label for="form-location">Location Found</label>
+                <input type="text" id="form-location" placeholder="e.g., Arizona, USA">
+            </div>
 
-            <label>Date Acquired</label>
-            <input type="date" id="form-date" />
-            <label>Photo</label>
-            <input type="file" id="form-image" accept="image/*" required />
-            <div id="image-preview"></div>
+            <div class="form-group">
+                <label for="form-date">Date Acquired</label>
+                <input type="date" id="form-date">
+            </div>
 
-            <label>Memories & Notes</label>
-            <textarea
-              id="form-notes"
-              rows="3"
-              placeholder="Write a sweet memory..."
-            ></textarea>
+            <div class="form-group">
+                <label for="form-image" class="custom-file-upload">📸 Snap or Choose Photo</label>
+                <input type="file" id="form-image" accept="image/*">
+                <div id="image-preview"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="form-notes">Memories & Notes</label>
+                <textarea id="form-notes" rows="3" placeholder="Write a sweet memory..."></textarea>
+            </div>
 
             <div class="form-buttons">
-              <button type="button" id="form-cancel-btn" class="secondary-btn">
-                Cancel
-              </button>
-              <button type="submit" id="form-submit-btn" class="primary-btn">
-                Save to Catalog
-              </button>
+                <button type="submit" id="form-submit-btn" class="primary-btn">Save to Catalog</button>
+                <button type="button" id="form-cancel-btn" class="secondary-btn">Cancel</button>
             </div>
-          </form>
+        </form>
         </div>
       </div>
     </div>
