@@ -1,4 +1,5 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbwkHhWGe002wKPO69bEWnxg2sAxRRVgPbU4NBrVd25Nz8Z2O9AyjRVE40CHa7xTCnClMg/exec";
+const API_URL =
+  "https://script.google.com/macros/s/AKfycbwkHhWGe002wKPO69bEWnxg2sAxRRVgPbU4NBrVd25Nz8Z2O9AyjRVE40CHa7xTCnClMg/exec";
 const APP_PASSCODE = "1234"; // Set her private 4-digit passcode here!
 
 let base64ImageData = "";
@@ -131,42 +132,42 @@ async function handleFormSubmit(e) {
     return;
   }
 
-// Ensure the button shows loading status
-    const submitBtn = document.getElementById('form-submit-btn');
-    submitBtn.innerText = "Saving to cloud...";
-    submitBtn.disabled = true;
+  // Ensure the button shows loading status
+  const submitBtn = document.getElementById("form-submit-btn");
+  submitBtn.innerText = "Saving to cloud...";
+  submitBtn.disabled = true;
 
-    const payload = {
-        name: nameField,
-        location: locationField,
-        date: dateField,
-        notes: notesField,
-        imageUrl: base64ImageData
-    };
+  const payload = {
+    name: nameField,
+    location: locationField,
+    date: dateField,
+    notes: notesField,
+    imageUrl: base64ImageData,
+  };
 
-    // iOS Safari Optimized Network Request
-    try {
-        await fetch(API_URL, {
-            method: 'POST',
-            redirect: 'follow', // Tells the browser to follow Google's internal security redirects
-            headers: { 
-                'Content-Type': 'text/plain;charset=utf-8' // Bypasses strict CORS triggers on mobile Safari
-            },
-            body: JSON.stringify(payload)
-        });
-        
-        // Clear the form after a successful handoff
-        document.getElementById('keychain-form').reset();
-        document.getElementById('image-preview').innerHTML = "";
-        base64ImageData = "";
-        
-        // Reset button and send user back to gallery
-        submitBtn.innerText = "Save to Catalog";
-        submitBtn.disabled = false;
-        showView('gallery');
-        
-    } catch(err) {
-        alert("Upload failed. Make sure you are connected to internet!");
-        submitBtn.innerText = "Save to Catalog";
-        submitBtn.disabled = false;
-    }
+  // iOS Safari Optimized Network Request
+  try {
+    await fetch(API_URL, {
+      method: "POST",
+      redirect: "follow", // Tells the browser to follow Google's internal security redirects
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8", // Bypasses strict CORS triggers on mobile Safari
+      },
+      body: JSON.stringify(payload),
+    });
+
+    // Clear the form after a successful handoff
+    document.getElementById("keychain-form").reset();
+    document.getElementById("image-preview").innerHTML = "";
+    base64ImageData = "";
+
+    // Reset button and send user back to gallery
+    submitBtn.innerText = "Save to Catalog";
+    submitBtn.disabled = false;
+    showView("gallery");
+  } catch (err) {
+    alert("Upload failed. Make sure you are connected to internet!");
+    submitBtn.innerText = "Save to Catalog";
+    submitBtn.disabled = false;
+  }
+}
