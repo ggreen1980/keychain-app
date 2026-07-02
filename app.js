@@ -1,218 +1,231 @@
+// ========================================================
+// SECURITY KEY & ENDPOINT MAPPING
+// ========================================================
 const API_URL =
   "https://script.google.com/macros/s/AKfycbxZxJENZlTYzPgdXeM7bAyGdqVUnv-fJUnRVG-6e3PwW5wPPnf4Ef9fmAUIPrp4qxMiPQ/exec";
+const CORRECT_PASSCODE = "4177"; // e.g., "1234"
 
-const CORRECT_PASSCODE = "1234";
+let compressedImageBase64 = "";
 
-let base64ImageData = "";
-
-// Initialize App on DOM Load
+// Boot initialization runtime hooks
 document.addEventListener("DOMContentLoaded", () => {
-  setupPasscodeLock();
-  setupEventListeners();
-  loadCatalog();
+  initAppSecurity();
+  initNavigationAndForm();
 });
 
-// PASSCODE GATEKEEPER LOCK
-function setupPasscodeLock() {
-  const loginBtn = document.getElementById("login-btn");
-  const passcodeInput = document.getElementById("passcode-input");
+// ========================================================
+// CORE SECURITY LAYER WITH PERSISTENT SESSION MEMORY
+// ========================================================
+function initAppSecurity() {
   const lockScreen = document.getElementById("lock-screen");
-  const appContainer = document.getElementById("app-container");
-  const errorMessage = document.getElementById("login-error");
+  const mainApp = document.getElementById("main-app");
+  const passcodeInput = document.getElementById("passcode-input");
+  const loginBtn = document.getElementById("login-btn");
+  const errorMsg = document.getElementById("error-message");
 
+  // Session Check: If previously logged in, skip lock screen automatically
+  if (localStorage.getItem("app_unlocked") === "true") {
+    lockScreen.classList.add("hidden");
+    mainApp.classList.remove("hidden");
+    loadGalleryData();
+  }
+
+  // Handle Action Button Submission Click
   loginBtn.addEventListener("click", () => {
-    if (passcodeInput.value === CORRECT_PASSCODE) {
-      lockScreen.classList.add("hidden");
-      appContainer.classList.remove("hidden");
-      loadCatalog();
-    } else {
-      errorMessage.textContent = "Incorrect passcode. Try again! ❤️";
-      passcodeInput.value = "";
+    checkPasscode(passcodeInput, lockScreen, mainApp, errorMsg);
+  });
+
+  // Handle Mobile Virtual Keyboard 'Enter/Go' Button Action
+  passcodeInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+      checkPasscode(passcodeInput, lockScreen, mainApp, errorMsg);
     }
   });
-
-  passcodeInput.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") loginBtn.click();
-  });
 }
 
-// ROUTING & EVENT LISTENERS
-function setupEventListeners() {
-  const addBtn = document.getElementById("add-btn");
-  const cancelBtn = document.getElementById("form-cancel-btn");
-  const form = document.getElementById("keychain-form");
-  const imageInput = document.getElementById("form-image");
+function checkPasscode(input, lockView, appView, errorView) {
+  if (input.value === CORRECT_PASSCODE) {
+    // Write login validation state flag to persistent browser cache memory
+    localStorage.setItem("app_unlocked", "true");
 
-  // Open Form View
-  addBtn.addEventListener("click", () => {
-    document.getElementById("gallery-view").classList.add("hidden");
-    document.getElementById("form-view").classList.remove("hidden");
-  });
+    errorView.classList.add("hidden");
+    lockView.classList.add("hidden");
+    appView.classList.remove("hidden");
+    input.value = "";
 
-  // Cancel Form View
-  cancelBtn.addEventListener("click", () => {
-    resetForm();
-    document.getElementById("form-view").classList.add("hidden");
-    document.getElementById("gallery-view").classList.remove("hidden");
-  });
-
-  // Handle Image Upload Selection
-  imageInput.addEventListener("change", handleImageProcessing);
-
-  // Handle Form Submission
-  form.addEventListener("submit", handleFormSubmit);
+    loadGalleryData();
+  } else {
+    errorView.classList.remove("hidden");
+    input.value = "";
+    input.style.borderColor = "var(--error-color)";
+    setTimeout(() => {
+      input.style.borderColor = "#e8dedf";
+    }, 500);
+  }
 }
 
-// COMPRESS & PROCESS CAMERA IMAGES FOR THE CLOUD
-function handleImageProcessing(e) {
-  const file = e.target.files[0];
-  if (!file) return;
+// ========================================================
+// VIEW ROUTING NAVIGATION & FILE HANDLING LOGIC
+// ========================================================
+function initNavigationAndForm() {
+  const galleryView = document.getElementById("gallery-view");
+  const formView = document.getElementById("form-view");
+  const navAddBtn = document.getElementById("nav-add-btn");
+  const formCancelBtn = document.getElementById("form-cancel-btn");
+  const formSubmitBtn = document.getElementById("form-submit-btn");
+  const fileInput = document.getElementById("input-file");
+  const imagePreview = document.getElementById("image-preview");
+  const keychainForm = document.getElementById("keychain-form");
 
-  const previewDiv = document.getElementById("image-preview");
-  previewDiv.innerHTML = "Processing image... 📸";
+  // Router View Controls
+  navAddBtn.addEventListener("click", () => {
+    galleryView.classList.add("hidden");
+    formView.classList.remove("hidden");
+    document.getElementById("input-date").valueAsDate = new Date();
+  });
 
-  const reader = new FileReader();
-  reader.onload = function (event) {
-    const img = new Image();
-    img.onload = function () {
-      const canvas = document.createElement("canvas");
-      let width = img.width;
-      let height = img.height;
+  formCancelBtn.addEventListener("click", () => {
+    keychainForm.reset();
+    imagePreview.innerHTML = "";
+    compressedImageBase64 = "";
+    formView.classList.add("hidden");
+    galleryView.classList.remove("hidden");
+  });
 
-      // Sizing rules optimized for mobile performance
-      const MAX_WIDTH = 600;
-      const MAX_HEIGHT = 600;
+  // Camera File Capture Process & Compressed Canvas Scaling Routine
+  fileInput.addEventListener("change", (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
 
-      if (width > height) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        // Hard constraint image max limits for quick network processing
+        const MAX_WIDTH = 800;
+        let width = img.width;
+        let height = img.height;
+
         if (width > MAX_WIDTH) {
-          height *= MAX_WIDTH / width;
+          height = Math.round((height * MAX_WIDTH) / width);
           width = MAX_WIDTH;
         }
-      } else {
-        if (height > MAX_HEIGHT) {
-          width *= MAX_HEIGHT / height;
-          height = MAX_HEIGHT;
-        }
-      }
 
-      canvas.width = width;
-      canvas.height = height;
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(img, 0, 0, width, height);
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
 
-      // High efficiency optimization configuration
-      base64ImageData = canvas.toDataURL("image/jpeg", 0.5);
-      previewDiv.innerHTML = `<img src="${base64ImageData}" style="max-width:100%; border-radius:8px; margin-top:10px;">`;
+        // Convert file asset into an optimized lightweight Base64 string stream
+        compressedImageBase64 = canvas.toDataURL("image/jpeg", 0.75);
+        imagePreview.innerHTML = `<img src="${compressedImageBase64}" alt="Preview">`;
+      };
+      img.src = e.target.result;
     };
-    img.src = event.target.result;
-  };
-  reader.readAsDataURL(file);
-}
+    reader.readAsDataURL(file);
+  });
 
-// POST DATA STREAM TO GOOGLE SPREADSHEET
-async function handleFormSubmit(e) {
-  e.preventDefault();
+  // Form Cloud Upload Submission Management
+  formSubmitBtn.addEventListener("click", () => {
+    const name = document.getElementById("input-name").value.trim();
+    const location = document.getElementById("input-location").value.trim();
+    const date = document.getElementById("input-date").value;
+    const notes = document.getElementById("input-notes").value.trim();
 
-  const submitBtn = document.getElementById("form-submit-btn");
-  const originalBtnText = submitBtn.textContent;
-
-  submitBtn.disabled = true;
-  submitBtn.textContent = "Saving to cloud... ☁️";
-
-  // 1. Mandatory Image Enforcement Validation
-  if (!base64ImageData) {
-    alert("Please snap or select a photo of the keychain first! 📸");
-    submitBtn.disabled = false;
-    submitBtn.textContent = originalBtnText;
-    return;
-  }
-
-  // Package payload data cleanly
-  const payload = {
-    name: document.getElementById("form-name").value.trim(),
-    location: document.getElementById("form-location").value.trim(),
-    date: document.getElementById("form-date").value,
-    notes: document.getElementById("form-notes").value.trim(),
-    imageUrl: base64ImageData,
-  };
-
-  // 2. Structural Content Text Field Verifications
-  if (!payload.name || !payload.location) {
-    alert("Please fill out at least the Name and Location fields!");
-    submitBtn.disabled = false;
-    submitBtn.textContent = originalBtnText;
-    return;
-  }
-
-  try {
-    const response = await fetch(API_URL, {
-      method: "POST",
-      mode: "no-cors",
-      headers: { "Content-Type": "text/plain" },
-      body: JSON.stringify(payload),
-    });
-
-    alert("Keychain entry successfully pushed! 🎉");
-    resetForm();
-
-    document.getElementById("form-view").classList.add("hidden");
-    document.getElementById("gallery-view").classList.remove("hidden");
-    loadCatalog();
-  } catch (error) {
-    console.error("Network transfer breakdown:", error);
-    alert("Cloud connection dropped. Please check connection and try again.");
-  } finally {
-    submitBtn.disabled = false;
-    submitBtn.textContent = originalBtnText;
-  }
-}
-
-// FETCH DATABASE AND RENDER CARDS
-async function loadCatalog() {
-  const gallery = document.getElementById("gallery-grid");
-  gallery.innerHTML = "<p class='loading-text'>Syncing collection data...</p>";
-
-  try {
-    const response = await fetch(API_URL);
-    const data = await response.json();
-
-    if (!data || data.length === 0) {
-      gallery.innerHTML =
-        "<p class='empty-text'>No keychains tracked yet. Tap the button above to add your first one! 🗺️</p>";
+    if (!name || !location || !date) {
+      alert("Please fill out Name, Location, and Date fields before saving.");
       return;
     }
 
-    gallery.innerHTML = "";
+    if (!compressedImageBase64) {
+      alert("Please take or select a photo of the keychain first!");
+      return;
+    }
 
-    data.reverse().forEach((item) => {
-      const card = document.createElement("div");
-      card.className = "keychain-card";
+    formSubmitBtn.disabled = true;
+    formSubmitBtn.innerText = "Saving to cloud... ☁️";
 
-      const imageTag = item.imageUrl
-        ? `<img src="${item.imageUrl}" alt="${item.name}" class='card-img' onerror="this.src='https://placehold.co/400x300?text=No+Photo+Available'">`
-        : `<div class="card-img-placeholder">🔑</div>`;
+    const payload = {
+      name: name,
+      location: location,
+      date: date,
+      imageUrl: compressedImageBase64,
+      notes: notes,
+    };
 
-      card.innerHTML = `
-        ${imageTag}
-        <div class="card-content">
-          <h3>${item.name || "Unnamed Keepsake"}</h3>
-          <p class="meta-location">📍 ${item.location || "Unknown Location"}</p>
-          <p class="meta-date">📅 ${item.date || "No Date Specified"}</p>
-          ${item.notes ? `<p class="meta-notes">" ${item.notes} "</p>` : ""}
-        </div>
-      `;
-      gallery.appendChild(card);
-    });
-  } catch (error) {
-    console.error("Failed to read database records:", error);
-    gallery.innerHTML =
-      "<p class='empty-text'>Unable to display gallery sync. Check API connection status strings.</p>";
-  }
+    fetch(API_URL, {
+      method: "POST",
+      mode: "no-cors",
+      cache: "no-cache",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    })
+      .then(() => {
+        alert("Success! Keychain saved into our travel catalog.");
+        keychainForm.reset();
+        imagePreview.innerHTML = "";
+        compressedImageBase64 = "";
+        formView.classList.add("hidden");
+        galleryView.classList.remove("hidden");
+        loadGalleryData();
+      })
+      .catch((err) => {
+        console.error(err);
+        alert("Network saving error. Please try uploading again.");
+      })
+      .finally(() => {
+        formSubmitBtn.disabled = false;
+        formSubmitBtn.innerText = "Save to Catalog";
+      });
+  });
 }
 
-// UTILITY FORM STATE RESET
-function resetForm() {
-  document.getElementById("keychain-form").reset();
-  document.getElementById("image-preview").innerHTML = "";
-  base64ImageData = "";
+// ========================================================
+// DATABASE FETCH & FEED RENDER ROUTINE
+// ========================================================
+function loadGalleryData() {
+  const grid = document.getElementById("gallery-grid");
+
+  fetch(API_URL)
+    .then((res) => res.json())
+    .then((data) => {
+      // Flush original layout markup loaders
+      grid.innerHTML = "";
+
+      if (!data || data.length === 0) {
+        grid.innerHTML = `<div class="empty-text">No keychains saved yet. Tap ＋ to start!</div>`;
+        return;
+      }
+
+      // Read database list in reverse order so newest acquisitions appear first
+      data.reverse().forEach((item) => {
+        const card = document.createElement("div");
+        card.className = "keychain-card";
+
+        const imageSegment = item.imageurl
+          ? `<img src="${item.imageurl}" class="card-img" alt="Keychain image" loading="lazy">`
+          : `<div class="card-img-placeholder">🔑</div>`;
+
+        const notesSegment = item.notes
+          ? `<p class="meta-notes">"${item.notes}"</p>`
+          : "";
+
+        card.innerHTML = `
+          ${imageSegment}
+          <div class="card-content">
+            <h3>${item.name}</h3>
+            <p class="meta-location">📍 ${item.location}</p>
+            <p class="meta-date">📅 ${item.date}</p>
+            ${notesSegment}
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    })
+    .catch((err) => {
+      console.error(err);
+      grid.innerHTML = `<div class="empty-text">Error loading database. Please pull down to refresh.</div>`;
+    });
 }
