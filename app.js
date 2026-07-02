@@ -49,9 +49,9 @@ function showView(viewName) {
 }
 
 // Resizes image slightly down for quick transit, then flags base64
-function handleImageProcessing(e) {
-  const file = e.target.files[0];
-  if (!file) return;
+//function handleImageProcessing(e) {
+  //const file = e.target.files[0];
+ // if (!file) return;
 
   const reader = new FileReader();
   reader.onload = function (event) {
