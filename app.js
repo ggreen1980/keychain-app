@@ -1,5 +1,5 @@
 const API_URL =
-  "https://script.google.com/macros/s/AKfycbwkHhWGe002wKPO69bEWnxg2sAxRRVgPbU4NBrVd25Nz8Z2O9AyjRVE40CHa7xTCnClMg/exec";
+  "https://script.google.com/macros/s/AKfycbxZxJENZlTYzPgdXeM7bAyGdqVUnv-fJUnRVG-6e3PwW5wPPnf4Ef9fmAUIPrp4qxMiPQ/exec";
 const APP_PASSCODE = "1234"; // Set her private 4-digit passcode here!
 
 let base64ImageData = "";
