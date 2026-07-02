@@ -100,7 +100,7 @@ function handleImageProcessing(e) {
       const ctx = canvas.getContext("2d");
       ctx.drawImage(img, 0, 0, width, height);
 
-      // Compress to high efficiency JPEG
+      // Compress to high efficiency JPEG (Optimized down to 0.50)
       base64ImageData = canvas.toDataURL("image/jpeg", 0.50);
       previewDiv.innerHTML = `<img src="${base64ImageData}" style="max-width:100%; border-radius:8px; margin-top:10px;">`;
     };
@@ -120,15 +120,24 @@ async function handleFormSubmit(e) {
   submitBtn.disabled = true;
   submitBtn.textContent = "Saving to cloud... ☁️";
 
+  // 1. Photo Gatekeeper Verification
+  if (!base64ImageData) {
+    alert("Please snap or select a photo of the keychain first! 📸");
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalBtnText;
+    return;
+  }
+
   // Package payload data cleanly
   const payload = {
     name: document.getElementById("form-name").value.trim(),
     location: document.getElementById("form-location").value.trim(),
     date: document.getElementById("form-date").value,
     notes: document.getElementById("form-notes").value.trim(),
-    imageUrl: base64ImageData // Will pass empty string if no image chosen
+    imageUrl: base64ImageData
   };
 
+  // 2. Text Input Verification
   if (!payload.name || !payload.location) {
     alert("Please fill out at least the Name and Location fields!");
     submitBtn.disabled = false;
