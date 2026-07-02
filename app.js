@@ -1,4 +1,4 @@
-const API_URL = "YOUR_APPS_SCRIPT_WEB_APP_URL";
+const API_URL = "https://script.google.com/macros/s/AKfycbwkHhWGe002wKPO69bEWnxg2sAxRRVgPbU4NBrVd25Nz8Z2O9AyjRVE40CHa7xTCnClMg/exec";
 const APP_PASSCODE = "1234"; // Set her private 4-digit passcode here!
 
 let base64ImageData = "";
