@@ -127,10 +127,10 @@ async function handleFormSubmit(e) {
     return;
   }
 
-  if (!base64ImageData) {
-    alert("Please snap or select a photo of the keychain first! 📸");
-    return;
-  }
+  //if (!base64ImageData) {
+  //  alert("Please snap or select a photo of the keychain first! 📸");
+ //   return;
+ // }
 
   // Ensure the button shows loading status
   const submitBtn = document.getElementById("form-submit-btn");
