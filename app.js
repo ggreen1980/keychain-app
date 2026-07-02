@@ -197,6 +197,11 @@ function loadGalleryData() {
           ? `<img src="${item.imageurl}" class="card-img" alt="Keychain image" loading="lazy">`
           : `<div class="card-img-placeholder">🔑</div>`;
 
+        // ADD THIS CLICK LISTENER TO THE CARD:
+        card.addEventListener("click", () => {
+          openFocusMode(item);
+        });
+        
         const notesSegment = item.notes
           ? `<p class="meta-notes">"${item.notes}"</p>`
           : "";
@@ -210,8 +215,9 @@ function loadGalleryData() {
             ${notesSegment}
           </div>
         `;
+
         grid.appendChild(card);
-      });
+      };);
     })
     .catch((err) => {
       console.error(err);

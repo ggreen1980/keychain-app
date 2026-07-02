@@ -1,97 +1,137 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Keychain Tracker</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Keychain Tracker</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="lock-screen" class="view-panel">
+      <div class="lock-screen-container">
+        <div class="lock-box">
+          <div class="lock-icon">🔒</div>
+          <h2>Keychain Collection</h2>
+          <p>Enter passcode to unlock</p>
 
-  <div id="lock-screen" class="view-panel">
-    <div class="lock-screen-container">
-      <div class="lock-box">
-        <div class="lock-icon">🔒</div>
-        <h2>Keychain Collection</h2>
-        <p>Enter passcode to unlock</p>
-        
-        <input 
-          type="password" 
-          id="passcode-input" 
-          inputmode="numeric" 
-          pattern="[0-9]*" 
-          maxlength="6" 
-          placeholder="••••"
-          autocomplete="current-password"
-        >
-        
-        <button id="login-btn" class="primary-btn">Unlock</button>
-        <div id="error-message" class="error-message hidden">Incorrect passcode. Try again!</div>
-      </div>
-    </div>
-  </div>
+          <input
+            type="password"
+            id="passcode-input"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            maxlength="6"
+            placeholder="••••"
+            autocomplete="current-password"
+          />
 
-  <div id="main-app" class="hidden">
-    
-    <header class="app-header">
-      <div class="header-logo">
-        <h1>Souvenir Catalog</h1>
-        <p>Our Travel Keepsakes</p>
-      </div>
-      <button id="nav-add-btn" class="circle-btn">＋</button>
-    </header>
-
-    <div id="gallery-view" class="view-panel">
-      <div id="gallery-grid" class="gallery-grid">
-        <div id="loading-text" class="loading-text">Loading your collection... ☁️</div>
+          <button id="login-btn" class="primary-btn">Unlock</button>
+          <div id="error-message" class="error-message hidden">
+            Incorrect passcode. Try again!
+          </div>
+        </div>
       </div>
     </div>
 
-    <div id="form-view" class="view-panel hidden">
-      <div class="form-card">
-        <h2>Add New Keepsake</h2>
-        <p class="form-subtitle">Capture a fresh location memory</p>
-        
-        <form id="keychain-form" onsubmit="return false;">
-          
-          <div class="form-group">
-            <label for="input-name">Keychain Name</label>
-            <input type="text" id="input-name" placeholder="e.g., Smoky Mountains Bear" required>
-          </div>
+    <div id="main-app" class="hidden">
+      <header class="app-header">
+        <div class="header-logo">
+          <h1>Souvenir Catalog</h1>
+          <p>Our Travel Keepsakes</p>
+        </div>
+        <button id="nav-add-btn" class="circle-btn">＋</button>
+      </header>
 
-          <div class="form-group">
-            <label for="input-location">Location Bought</label>
-            <input type="text" id="input-location" placeholder="e.g., Gatlinburg, TN" required>
+      <div id="gallery-view" class="view-panel">
+        <div id="gallery-grid" class="gallery-grid">
+          <div id="loading-text" class="loading-text">
+            Loading your collection... ☁️
           </div>
+        </div>
+      </div>
 
-          <div class="form-group">
-            <label for="input-date">Date Acquired</label>
-            <input type="date" id="input-date" required>
-          </div>
+      <div id="form-view" class="view-panel hidden">
+        <div class="form-card">
+          <h2>Add New Keepsake</h2>
+          <p class="form-subtitle">Capture a fresh location memory</p>
 
-          <div class="form-group">
-            <label>Photo Capture</label>
-            <label for="input-file" class="custom-file-upload">📸 Open Camera / Select Image</label>
-            <input type="file" id="input-file" accept="image/*" capture="environment">
-            <div id="image-preview"></div>
-          </div>
+          <form id="keychain-form" onsubmit="return false;">
+            <div class="form-group">
+              <label for="input-name">Keychain Name</label>
+              <input
+                type="text"
+                id="input-name"
+                placeholder="e.g., Smoky Mountains Bear"
+                required
+              />
+            </div>
 
-          <div class="form-group">
-            <label for="input-notes">Memory Notes</label>
-            <textarea id="input-notes" rows="3" placeholder="Write a tiny story or memory about this trip..."></textarea>
-          </div>
+            <div class="form-group">
+              <label for="input-location">Location Bought</label>
+              <input
+                type="text"
+                id="input-location"
+                placeholder="e.g., Gatlinburg, TN"
+                required
+              />
+            </div>
 
-          <div class="form-buttons">
-            <button type="button" id="form-cancel-btn" class="secondary-btn">Cancel</button>
-            <button type="button" id="form-submit-btn" class="primary-btn">Save to Catalog</button>
-          </div>
+            <div class="form-group">
+              <label for="input-date">Date Acquired</label>
+              <input type="date" id="input-date" required />
+            </div>
 
-        </form>
+            <div class="form-group">
+              <label>Photo Capture</label>
+              <label for="input-file" class="custom-file-upload"
+                >📸 Open Camera / Select Image</label
+              >
+              <input
+                type="file"
+                id="input-file"
+                accept="image/*"
+                capture="environment"
+              />
+              <div id="image-preview"></div>
+            </div>
+
+            <div class="form-group">
+              <label for="input-notes">Memory Notes</label>
+              <textarea
+                id="input-notes"
+                rows="3"
+                placeholder="Write a tiny story or memory about this trip..."
+              ></textarea>
+            </div>
+
+            <div class="form-buttons">
+              <button type="button" id="form-cancel-btn" class="secondary-btn">
+                Cancel
+              </button>
+              <button type="button" id="form-submit-btn" class="primary-btn">
+                Save to Catalog
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- Full-Screen Focus View Modal -->
+    <div id="focusModal" class="focus-modal" style="display: none">
+      <span class="focus-close">&times;</span>
+      <div class="focus-card-content">
+        <img id="focusImage" src="" alt="Focused Keychain" />
+        <div class="focus-text-details">
+          <h2 id="focusName"></h2>
+          <p id="focusLocation"></p>
+          <p id="focusDate"></p>
+          <div id="focusNotes" class="focus-notes-box"></div>
+        </div>
       </div>
     </div>
 
-  </div>
-
-  <script src="app.js"></script>
-</body>
+    <script src="app.js"></script>
+  </body>
 </html>
