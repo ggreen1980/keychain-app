@@ -114,22 +114,39 @@ function renderGallery(items) {
 
 async function handleFormSubmit(e) {
   e.preventDefault();
+
+  const nameField = document.getElementById("form-name").value.trim();
+  const locationField = document.getElementById("form-location").value.trim();
+  const dateField = document.getElementById("form-date").value;
+  const notesField = document.getElementById("form-notes").value.trim();
+
+  // Custom JavaScript Verification
+  if (!nameField || !locationField) {
+    alert("Please fill out both the Name and Location! 💕");
+    return;
+  }
+
+  if (!base64ImageData) {
+    alert("Please snap or select a photo of the keychain first! 📸");
+    return;
+  }
+
   const submitBtn = document.getElementById("form-submit-btn");
-  submitBtn.innerText = "Uploading to cloud...";
+  submitBtn.innerText = "Saving to cloud...";
   submitBtn.disabled = true;
 
   const payload = {
-    name: document.getElementById("form-name").value,
-    location: document.getElementById("form-location").value,
-    date: document.getElementById("form-date").value,
-    notes: document.getElementById("form-notes").value,
+    name: nameField,
+    location: locationField,
+    date: dateField,
+    notes: notesField,
     imageUrl: base64ImageData,
   };
 
   try {
     await fetch(API_URL, {
       method: "POST",
-      mode: "no-cors", // Bypasses CORS browser restrictions safely
+      mode: "no-cors",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
@@ -141,7 +158,6 @@ async function handleFormSubmit(e) {
     showView("gallery");
   } catch (err) {
     alert("Upload failed. Make sure you are connected to internet!");
-  } finally {
     submitBtn.innerText = "Save to Catalog";
     submitBtn.disabled = false;
   }

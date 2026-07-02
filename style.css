@@ -180,13 +180,32 @@ input[type="file"] {
   margin-top: 15px;
 }
 .primary-btn {
-  background: var(--primary-color);
+  background: #c97a8b; /* Deeper, vibrant rose color for better contrast */
   color: white;
   padding: 14px;
   border: none;
   border-radius: 10px;
   font-weight: 600;
   width: 100%;
+  font-size: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition:
+    background 0.2s,
+    transform 0.1s;
+}
+
+/* Makes the button visually sink and darken slightly when tapped on a phone */
+.primary-btn:active {
+  background: #b25e70;
+  transform: scale(0.98);
+}
+
+/* Disabled state styling just in case */
+.primary-btn:disabled {
+  background: #d3c2c5;
+  color: #ffffff;
+  box-shadow: none;
+  transform: none;
 }
 .secondary-btn {
   background: #e8dedf;
