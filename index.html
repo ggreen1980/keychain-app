@@ -1,89 +1,109 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"
-    />
-    <title>My Keychains</title>
-    <link rel="stylesheet" href="style.css" />
-    <link rel="manifest" href="manifest.json" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta
-      name="apple-mobile-web-app-status-bar-style"
-      content="black-translucent"
-    />
-    <meta name="apple-mobile-web-app-title" content="Keychains" />
-  </head>
-  <body>
-    <div id="lock-screen" class="view active">
-      <div class="lock-container">
-        <div class="heart-icon">💝</div>
-        <h2>Enter Private Passcode</h2>
-        <input
-          type="password"
-          id="passcode-input"
-          pattern="[0-9]*"
-          inputmode="numeric"
-          placeholder="••••"
-          maxlength="4"
-        />
-        <button id="login-btn">Unlock Collection</button>
-        <p id="lock-error" class="error-text"></p>
-      </div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Our Keychain Collection</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <section id="lock-screen" class="lock-screen-container">
+    <div class="lock-box">
+      <div class="lock-icon">🔒</div>
+      <h2>Our Keepsake Catalog</h2>
+      <p>Enter our secret passcode to view our collection:</p>
+      
+      <input 
+        type="password" 
+        id="passcode-input" 
+        placeholder="Enter passcode..." 
+        autocomplete="current-password"
+      >
+      <button id="login-btn" class="primary-btn">Unlock Memory Vault</button>
+      
+      <p id="login-error" class="error-message"></p>
     </div>
+  </section>
 
-    <div id="main-app" class="hidden">
-      <header>
-        <h1>My Keychains</h1>
-        <button id="nav-add-btn" class="circle-btn">+</button>
-      </header>
+  <div id="app-container" class="hidden">
 
-      <main id="gallery-view" class="view-content">
-        <div id="loading-spinner">Loading collection...</div>
-        <div id="keychain-grid" class="grid"></div>
-      </main>
+    <header class="app-header">
+      <div class="header-logo">
+        <h1>Our Keychain Catalog 🗺️</h1>
+        <p>Tracking our adventures, one link at a time.</p>
+      </div>
+      <button id="add-btn" class="primary-btn">➕ Add New Keychain</button>
+    </header>
 
-      <div id="add-view" class="view-content hidden">
-        <div class="form-container">
-          <h2>Add New Keychain</h2>
+    <main id="gallery-view" class="view-panel">
+      <div id="gallery-grid" class="gallery-grid"></div>
+    </main>
+
+    <section id="form-view" class="view-panel hidden">
+      <div class="form-card">
+        <h2>Add a New Memory</h2>
+        <p class="form-subtitle">Capture the details while they are fresh!</p>
+        
         <form id="keychain-form">
-            <div class="form-group">
-                <label for="form-name">Keychain Name</label>
-                <input type="text" id="form-name" placeholder="e.g., Grand Canyon Boot">
-            </div>
+          <div class="form-group">
+            <label for="form-name">Keychain Name</label>
+            <input 
+              type="text" 
+              id="form-name" 
+              placeholder="e.g., Grand Canyon Boot"
+            >
+          </div>
 
-            <div class="form-group">
-                <label for="form-location">Location Found</label>
-                <input type="text" id="form-location" placeholder="e.g., Arizona, USA">
-            </div>
+          <div class="form-group">
+            <label for="form-location">Location Found</label>
+            <input 
+              type="text" 
+              id="form-location" 
+              placeholder="e.g., Arizona, USA"
+            >
+          </div>
 
-            <div class="form-group">
-                <label for="form-date">Date Acquired</label>
-                <input type="date" id="form-date">
-            </div>
+          <div class="form-group">
+            <label for="form-date">Date Acquired</label>
+            <input 
+              type="date" 
+              id="form-date"
+            >
+          </div>
 
-            <div class="form-group">
-                <label for="form-image" class="custom-file-upload">📸 Snap or Choose Photo</label>
-                <input type="file" id="form-image" accept="image/*">
-                <div id="image-preview"></div>
-            </div>
+          <div class="form-group">
+            <label for="form-image" class="custom-file-upload">📸 Snap or Choose Photo</label>
+            <input 
+              type="file" 
+              id="form-image" 
+              accept="image/*"
+            >
+            <div id="image-preview"></div>
+          </div>
 
-            <div class="form-group">
-                <label for="form-notes">Memories & Notes</label>
-                <textarea id="form-notes" rows="3" placeholder="Write a sweet memory..."></textarea>
-            </div>
+          <div class="form-group">
+            <label for="form-notes">Memories & Notes</label>
+            <textarea 
+              id="form-notes" 
+              rows="3" 
+              placeholder="Write a sweet memory..."
+            ></textarea>
+          </div>
 
-            <div class="form-buttons">
-                <button type="submit" id="form-submit-btn" class="primary-btn">Save to Catalog</button>
-                <button type="button" id="form-cancel-btn" class="secondary-btn">Cancel</button>
-            </div>
+          <div class="form-buttons">
+            <button type="submit" id="form-submit-btn" class="primary-btn">Save to Catalog</button>
+            <button type="button" id="form-cancel-btn" class="secondary-btn">Cancel</button>
+          </div>
         </form>
-        </div>
       </div>
-    </div>
+    </section>
 
-    <script src="app.js"></script>
-  </body>
+  </div>
+
+  <script src="app.js"></script>
+</body>
 </html>
