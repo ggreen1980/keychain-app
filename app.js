@@ -10,14 +10,15 @@ const CLOUDINARY_PRESET = "keychain_preset"; // The preset name you created
 
 let localImageFileBlob = null;
 
-// Boot initialization runtime hooks
+// Initialization Hook
 document.addEventListener("DOMContentLoaded", () => {
   initAppSecurity();
   initNavigationAndForm();
+  initFocusModalEvents();
 });
 
 // ========================================================
-// CORE SECURITY LAYER WITH PERSISTENT SESSION MEMORY
+// SECURITY LAYER WITH PERSISTENT MEMORY
 // ========================================================
 function initAppSecurity() {
   const lockScreen = document.getElementById("lock-screen");
@@ -88,7 +89,6 @@ function initNavigationAndForm() {
     galleryView.classList.remove("hidden");
   });
 
-  // Display quick local preview when photo is captured
   fileInput.addEventListener("change", (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -101,7 +101,6 @@ function initNavigationAndForm() {
     reader.readAsDataURL(file);
   });
 
-  // Dual-Stage Upload Handling: Cloudinary first, then Google Sheets
   formSubmitBtn.addEventListener("click", async () => {
     const name = document.getElementById("input-name").value.trim();
     const location = document.getElementById("input-location").value.trim();
@@ -122,7 +121,6 @@ function initNavigationAndForm() {
     formSubmitBtn.innerText = "Uploading Photo... 📸";
 
     try {
-      // STAGE 1: Stream File Asset Directly to Cloudinary Cloud Tank
       const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
       const formData = new FormData();
       formData.append("file", localImageFileBlob);
@@ -135,16 +133,15 @@ function initNavigationAndForm() {
 
       if (!cloudResponse.ok) throw new Error("Cloudinary media upload failed");
       const cloudData = await cloudResponse.json();
-      const secureCDNImageUrl = cloudData.secure_url; // Clean, high-speed delivery link
+      const secureCDNImageUrl = cloudData.secure_url;
 
-      // STAGE 2: Deliver clean payload ledger straight to Google Spreadsheet Rows
       formSubmitBtn.innerText = "Saving to catalog... ☁️";
 
       const payload = {
         name: name,
         location: location,
         date: date,
-        imageUrl: secureCDNImageUrl, // Fast CDN URL asset string
+        imageUrl: secureCDNImageUrl,
         notes: notes,
       };
 
@@ -197,11 +194,6 @@ function loadGalleryData() {
           ? `<img src="${item.imageurl}" class="card-img" alt="Keychain image" loading="lazy">`
           : `<div class="card-img-placeholder">🔑</div>`;
 
-        // ADD THIS CLICK LISTENER TO THE CARD:
-        card.addEventListener("click", () => {
-          openFocusMode(item);
-        });
-        
         const notesSegment = item.notes
           ? `<p class="meta-notes">"${item.notes}"</p>`
           : "";
@@ -216,11 +208,60 @@ function loadGalleryData() {
           </div>
         `;
 
+        // Interactive Click Hook: Opens full screen focus card view
+        card.addEventListener("click", () => {
+          openFocusMode(item);
+        });
+
         grid.appendChild(card);
-      };);
+      });
     })
     .catch((err) => {
       console.error(err);
-      grid.innerHTML = `<div class="empty-text">Error loading database. Please pull down to refresh.</div>`;
+      grid.innerHTML = `<div class="empty-text">Error loading database. Please try reloading.</div>`;
     });
+}
+
+// ========================================================
+// DETAIL CARD MODAL FOCUS VIEW CONTROLLER
+// ========================================================
+function openFocusMode(item) {
+  document.getElementById("focusImage").src = item.imageurl || "";
+  document.getElementById("focusName").innerText =
+    item.name || "Unnamed Keychain";
+  document.getElementById("focusLocation").innerText = item.location
+    ? `📍 ${item.location}`
+    : "📍 Unknown";
+  document.getElementById("focusDate").innerText = item.date
+    ? `📅 ${item.date}`
+    : "";
+
+  const notesBox = document.getElementById("focusNotes");
+  if (item.notes && item.notes.trim() !== "") {
+    notesBox.innerText = `"${item.notes}"`;
+    notesBox.style.display = "block";
+  } else {
+    notesBox.style.display = "none";
+  }
+
+  document.getElementById("focusModal").style.display = "flex";
+}
+
+function initFocusModalEvents() {
+  const modal = document.getElementById("focusModal");
+  const closeBtn = document.querySelector(".focus-close");
+
+  if (closeBtn) {
+    closeBtn.addEventListener("click", () => {
+      modal.style.display = "none";
+    });
+  }
+
+  if (modal) {
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        modal.style.display = "none";
+      }
+    });
+  }
 }
