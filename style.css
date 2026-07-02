@@ -467,7 +467,21 @@ input[type="file"] {
   border-radius: 6px;
   font-size: 1rem;
 }
+.danger-link-btn {
+  background: none;
+  border: none;
+  color: #c93b3b;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
 
+.danger-link-btn:hover {
+  background: #fdf2f2;
+}
 @media (min-width: 600px) {
   .gallery-grid {
     grid-template-columns: repeat(3, 1fr);
