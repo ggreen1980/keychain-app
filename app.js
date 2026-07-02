@@ -80,8 +80,8 @@ function handleImageProcessing(e) {
       let height = img.height;
 
       // Restrict max sizing dimensions to keep payloads lightweight
-      const MAX_WIDTH = 800;
-      const MAX_HEIGHT = 800;
+      const MAX_WIDTH = 600;
+      const MAX_HEIGHT = 600;
 
       if (width > height) {
         if (width > MAX_WIDTH) {
@@ -101,7 +101,7 @@ function handleImageProcessing(e) {
       ctx.drawImage(img, 0, 0, width, height);
 
       // Compress to high efficiency JPEG
-      base64ImageData = canvas.toDataURL("image/jpeg", 0.75);
+      base64ImageData = canvas.toDataURL("image/jpeg", 0.50);
       previewDiv.innerHTML = `<img src="${base64ImageData}" style="max-width:100%; border-radius:8px; margin-top:10px;">`;
     };
     img.src = event.target.result;
