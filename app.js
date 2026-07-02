@@ -1,7 +1,7 @@
 const API_URL =
   "https://script.google.com/macros/s/AKfycbxZxJENZlTYzPgdXeM7bAyGdqVUnv-fJUnRVG-6e3PwW5wPPnf4Ef9fmAUIPrp4qxMiPQ/exec";
 
-const CORRECT_PASSCODE = "1234"; // Replace with your actual passcode
+const CORRECT_PASSCODE = "1234";
 
 let base64ImageData = "";
 
@@ -79,7 +79,7 @@ function handleImageProcessing(e) {
       let width = img.width;
       let height = img.height;
 
-      // Restrict max sizing dimensions to keep payloads lightweight
+      // Sizing rules optimized for mobile performance
       const MAX_WIDTH = 600;
       const MAX_HEIGHT = 600;
 
@@ -100,8 +100,8 @@ function handleImageProcessing(e) {
       const ctx = canvas.getContext("2d");
       ctx.drawImage(img, 0, 0, width, height);
 
-      // Compress to high efficiency JPEG (Optimized down to 0.50)
-      base64ImageData = canvas.toDataURL("image/jpeg", 0.50);
+      // High efficiency optimization configuration
+      base64ImageData = canvas.toDataURL("image/jpeg", 0.5);
       previewDiv.innerHTML = `<img src="${base64ImageData}" style="max-width:100%; border-radius:8px; margin-top:10px;">`;
     };
     img.src = event.target.result;
@@ -116,11 +116,10 @@ async function handleFormSubmit(e) {
   const submitBtn = document.getElementById("form-submit-btn");
   const originalBtnText = submitBtn.textContent;
 
-  // Visual status update
   submitBtn.disabled = true;
   submitBtn.textContent = "Saving to cloud... ☁️";
 
-  // 1. Photo Gatekeeper Verification
+  // 1. Mandatory Image Enforcement Validation
   if (!base64ImageData) {
     alert("Please snap or select a photo of the keychain first! 📸");
     submitBtn.disabled = false;
@@ -134,10 +133,10 @@ async function handleFormSubmit(e) {
     location: document.getElementById("form-location").value.trim(),
     date: document.getElementById("form-date").value,
     notes: document.getElementById("form-notes").value.trim(),
-    imageUrl: base64ImageData
+    imageUrl: base64ImageData,
   };
 
-  // 2. Text Input Verification
+  // 2. Structural Content Text Field Verifications
   if (!payload.name || !payload.location) {
     alert("Please fill out at least the Name and Location fields!");
     submitBtn.disabled = false;
@@ -148,20 +147,17 @@ async function handleFormSubmit(e) {
   try {
     const response = await fetch(API_URL, {
       method: "POST",
-      mode: "no-cors", // Crucial block bypass for mobile redirects
+      mode: "no-cors",
       headers: { "Content-Type": "text/plain" },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
 
-    // Since 'no-cors' returns an opaque response type, we verify completion via timeline delay
     alert("Keychain entry successfully pushed! 🎉");
     resetForm();
-    
-    // Bounce back to the main updated view gallery
+
     document.getElementById("form-view").classList.add("hidden");
     document.getElementById("gallery-view").classList.remove("hidden");
     loadCatalog();
-
   } catch (error) {
     console.error("Network transfer breakdown:", error);
     alert("Cloud connection dropped. Please check connection and try again.");
@@ -181,19 +177,18 @@ async function loadCatalog() {
     const data = await response.json();
 
     if (!data || data.length === 0) {
-      gallery.innerHTML = "<p class='empty-text'>No keychains tracked yet. Tap the button above to add your first one! 🗺️</p>";
+      gallery.innerHTML =
+        "<p class='empty-text'>No keychains tracked yet. Tap the button above to add your first one! 🗺️</p>";
       return;
     }
 
-    gallery.innerHTML = ""; // Clear loader text
+    gallery.innerHTML = "";
 
-    // Sort newest acquired entries straight to the top of the grid view
-    data.reverse().forEach(item => {
+    data.reverse().forEach((item) => {
       const card = document.createElement("div");
       card.className = "keychain-card";
 
-      // Fallback placeholder graphic asset if entry was saved without a phone photo
-      const imageTag = item.imageUrl 
+      const imageTag = item.imageUrl
         ? `<img src="${item.imageUrl}" alt="${item.name}" class='card-img' onerror="this.src='https://placehold.co/400x300?text=No+Photo+Available'">`
         : `<div class="card-img-placeholder">🔑</div>`;
 
@@ -208,10 +203,10 @@ async function loadCatalog() {
       `;
       gallery.appendChild(card);
     });
-
   } catch (error) {
     console.error("Failed to read database records:", error);
-    gallery.innerHTML = "<p class='empty-text'>Unable to display gallery sync. Check API connection status strings.</p>";
+    gallery.innerHTML =
+      "<p class='empty-text'>Unable to display gallery sync. Check API connection status strings.</p>";
   }
 }
 
