@@ -299,6 +299,7 @@ function loadGalleryData() {
 // ========================================================
 // DETAIL CARD MODAL FOCUS VIEW CONTROLLER
 // ========================================================
+
 function openFocusMode(item) {
   document.getElementById("focusImage").src = item.imageurl || "";
   document.getElementById("focusName").innerText =
@@ -307,8 +308,38 @@ function openFocusMode(item) {
   // Displays historical metadata ONLY in individual item details layout view mode
   document.getElementById("focusLocation").innerText =
     `From: ${item.location || "Unknown"}`;
-  document.getElementById("focusDate").innerText =
-    `📅 ${item.date || "Unknown"}`;
+
+  // DATE FORMATTING PIPELINE: Converts YYYY-MM-DD strings cleanly into "Month Day, Year"
+  let formattedDate = "Unknown";
+  if (item.date && item.date.toLowerCase() !== "unknown") {
+    try {
+      // Split by hyphen to avoid timezone shifting drops or offsets
+      const parts = item.date.split("-");
+      if (parts.length === 3) {
+        // Javascript Date months are 0-indexed (0 = January)
+        const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
+        formattedDate = dateObj.toLocaleDateString("en-US", {
+          month: "long",
+          day: "numeric",
+          year: "numeric",
+        });
+      } else {
+        // Fallback for any standard unrecognized timestamp formats
+        const dateObj = new Date(item.date);
+        if (!isNaN(dateObj.getTime())) {
+          formattedDate = dateObj.toLocaleDateString("en-US", {
+            month: "long",
+            day: "numeric",
+            year: "numeric",
+          });
+        }
+      }
+    } catch (e) {
+      console.error("Date parsing error: ", e);
+      formattedDate = item.date; // Use raw string if everything fails
+    }
+  }
+  document.getElementById("focusDate").innerText = `📅 ${formattedDate}`;
 
   const notesBox = document.getElementById("focusNotes");
   if (item.notes && item.notes.trim() !== "") {
