@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Poppins:wght@400;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Poppins:wght@400;600;700&display=swap");
 
 /* ========================================================
    THEME PALETTE VARIABLES & BASE CONFIGURATION
@@ -39,24 +39,23 @@ body {
 }
 
 /* ========================================================
-   THEMED TYPOGRAPHY HIERARCHY (OPTION 2: MODERN GEOMETRIC)
+   THEMED TYPOGRAPHY HIERARCHY (OPTION 1: SPACED SERIF)
    ======================================================== */
 .header-logo h1 {
-  font-family: "Montserrat", sans-serif;
-  font-size: 1.25rem;
+  font-family: "Playfair Display", serif;
+  font-size: 1.4rem; /* Slightly smaller to accommodate the spacing */
   font-weight: 700;
-  text-transform: uppercase; /* Makes the tracking pop beautifully */
-  letter-spacing: 3px; /* Wide, clean spacing that feels like a premium brand */
+  letter-spacing: 2.5px; /* Boosted spacing significantly */
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.15);
 }
 
 .lock-box h2,
 .form-card h2,
 .focus-text-details h2 {
-  font-family: "Montserrat", sans-serif;
+  font-family: "Playfair Display", serif;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  font-size: 1.3rem;
+  letter-spacing: 1.5px; /* Added tracking to secondary headers */
+  color: var(--monica-purple);
 }
 
 /* ========================================================
