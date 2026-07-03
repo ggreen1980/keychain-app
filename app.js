@@ -269,11 +269,17 @@ function initNavigationAndForm() {
 // ========================================================
 function loadGalleryData() {
   const grid = document.getElementById("gallery-grid");
+  const loadingContainer = document.getElementById("loading-text");
   if (!grid) return;
 
   fetch(API_URL)
     .then((res) => res.json())
     .then((data) => {
+      // HIDE LOADING ENGINES: Successfully received data pipeline
+      if (loadingContainer) {
+        loadingContainer.classList.add("hidden");
+      }
+
       grid.innerHTML = "";
 
       if (!data || data.length === 0) {
@@ -305,6 +311,10 @@ function loadGalleryData() {
     })
     .catch((err) => {
       console.error(err);
+      // HIDE LOADING ENGINES EVEN ON FAILURE
+      if (loadingContainer) {
+        loadingContainer.classList.add("hidden");
+      }
       grid.innerHTML = `<div class="empty-text">Error loading database. Please try reloading.</div>`;
     });
 }
