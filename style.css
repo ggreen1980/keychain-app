@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Poppins:wght@400;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Poppins:wght@400;600;700&display=swap");
 
 /* ========================================================
    THEME PALETTE VARIABLES & BASE CONFIGURATION
@@ -39,37 +39,24 @@ body {
 }
 
 /* ========================================================
-   THEMED TYPOGRAPHY HIERARCHY
+   THEMED TYPOGRAPHY HIERARCHY (OPTION 2: MODERN GEOMETRIC)
    ======================================================== */
 .header-logo h1 {
-  font-family: "Playfair Display", serif;
-  font-size: 1.5rem;
+  font-family: "Montserrat", sans-serif;
+  font-size: 1.25rem;
   font-weight: 700;
-  letter-spacing: 1.5px;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+  text-transform: uppercase; /* Makes the tracking pop beautifully */
+  letter-spacing: 3px; /* Wide, clean spacing that feels like a premium brand */
 }
 
 .lock-box h2,
 .form-card h2,
 .focus-text-details h2 {
-  font-family: "Playfair Display", serif;
+  font-family: "Montserrat", sans-serif;
   font-weight: 700;
-  letter-spacing: 0.5px;
-}
-
-/* Smooth structural updates for secondary fields */
-.card-content h3 {
-  font-family: "Poppins", sans-serif;
-  font-size: 0.9rem;
-  font-weight: 600;
-}
-
-.form-group label {
-  font-family: "Poppins", sans-serif;
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  text-transform: uppercase; /* Sharp look for metadata labels */
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-size: 1.3rem;
 }
 
 /* ========================================================
