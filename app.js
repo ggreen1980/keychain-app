@@ -65,9 +65,9 @@ function checkPasscode(input, lockView, appView, errorView) {
   } else {
     errorView.classList.remove("hidden");
     input.value = "";
-    input.style.borderColor = "var(--error-color)";
+    input.classList.add("error-shake");
     setTimeout(() => {
-      input.style.borderColor = "#e8dedf";
+      input.classList.remove("error-shake");
     }, 500);
   }
 }
@@ -76,8 +76,8 @@ function checkPasscode(input, lockView, appView, errorView) {
 // PROFILE MENU DROPDOWN INTERACTION
 // ========================================================
 function initProfileDropdown() {
-  const trigger = document.getElementById("profile-menu-btn");
-  const content = document.getElementById("profile-menu-content");
+  const trigger = document.getElementById("profile-btn");
+  const content = document.getElementById("dropdown-menu");
 
   if (!trigger || !content) return;
 
@@ -132,21 +132,29 @@ function initDateToggleControl() {
 function initNavigationAndForm() {
   const galleryView = document.getElementById("gallery-view");
   const formView = document.getElementById("form-view");
-  const navAddBtn = document.getElementById("nav-add-btn");
+
+  // FIX: Realigned element mapper target to target the new floating button ID
+  const addBtn = document.getElementById("add-btn");
+
   const formCancelBtn = document.getElementById("form-cancel-btn");
   const formSubmitBtn = document.getElementById("form-submit-btn");
   const fileInput = document.getElementById("input-file");
   const imagePreview = document.getElementById("image-preview");
   const keychainForm = document.getElementById("keychain-form");
 
-  if (!navAddBtn) return;
+  if (addBtn) {
+    addBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      if (galleryView) galleryView.classList.add("hidden");
+      if (formView) formView.classList.remove("hidden");
 
-  navAddBtn.addEventListener("click", () => {
-    if (galleryView) galleryView.classList.add("hidden");
-    if (formView) formView.classList.remove("hidden");
-    const todayBtn = document.getElementById("date-mode-today");
-    if (todayBtn) todayBtn.click();
-  });
+      // Hide the floating action button itself while form view is filled
+      addBtn.classList.add("hidden");
+
+      const todayBtn = document.getElementById("date-mode-today");
+      if (todayBtn) todayBtn.click();
+    });
+  }
 
   if (formCancelBtn) {
     formCancelBtn.addEventListener("click", () => {
@@ -155,6 +163,9 @@ function initNavigationAndForm() {
       localImageFileBlob = null;
       if (formView) formView.classList.add("hidden");
       if (galleryView) galleryView.classList.remove("hidden");
+
+      // Restore floating button visibility upon returning to grid view
+      if (addBtn) addBtn.classList.remove("hidden");
     });
   }
 
@@ -250,13 +261,16 @@ function initNavigationAndForm() {
         localImageFileBlob = null;
         if (formView) formView.classList.add("hidden");
         if (galleryView) galleryView.classList.remove("hidden");
+
+        // Restore floating button visibility upon card compile completion
+        if (addBtn) addBtn.classList.remove("hidden");
+
         loadGalleryData();
       } catch (err) {
         console.error(err);
         alert(
           "Process stopped. Storage update sequence encountered a pipeline error.",
         );
-      } finally {
         formSubmitBtn.disabled = false;
         formSubmitBtn.innerText = "Save to Catalog";
       }
@@ -275,7 +289,6 @@ function loadGalleryData() {
   fetch(API_URL)
     .then((res) => res.json())
     .then((data) => {
-      // HIDE LOADING ENGINES: Successfully received data pipeline
       if (loadingContainer) {
         loadingContainer.classList.add("hidden");
       }
@@ -283,7 +296,7 @@ function loadGalleryData() {
       grid.innerHTML = "";
 
       if (!data || data.length === 0) {
-        grid.innerHTML = `<div class="empty-text">No keychains saved yet. Tap Add to start!</div>`;
+        grid.innerHTML = `<div class="empty-text">No keychains saved yet. Tap the floating button to start!</div>`;
         return;
       }
 
@@ -311,7 +324,6 @@ function loadGalleryData() {
     })
     .catch((err) => {
       console.error(err);
-      // HIDE LOADING ENGINES EVEN ON FAILURE
       if (loadingContainer) {
         loadingContainer.classList.add("hidden");
       }
