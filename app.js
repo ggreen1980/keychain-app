@@ -9,12 +9,15 @@ const CLOUDINARY_CLOUD_NAME = "xzpkydjm";
 const CLOUDINARY_PRESET = "keychain_preset";
 
 let localImageFileBlob = null;
+let activeDateMode = "today"; // Tracks choices: 'today', 'custom', 'unknown'
 
 // Initialization Hook
 document.addEventListener("DOMContentLoaded", () => {
   initAppSecurity();
   initNavigationAndForm();
   initFocusModalEvents();
+  initProfileDropdown();
+  initDateToggleControl();
 });
 
 // ========================================================
@@ -26,7 +29,6 @@ function initAppSecurity() {
   const passcodeInput = document.getElementById("passcode-input");
   const loginBtn = document.getElementById("login-btn");
   const errorMsg = document.getElementById("error-message");
-  const logoutBtn = document.getElementById("logout-btn");
 
   if (localStorage.getItem("app_unlocked") === "true") {
     lockScreen.classList.add("hidden");
@@ -44,16 +46,16 @@ function initAppSecurity() {
     }
   });
 
-  // LOGOUT LOGIC: Clears session token and snaps back to lock screen immediately
-  logoutBtn.addEventListener("click", () => {
+  // LOGOUT INTERACTION
+  document.getElementById("logout-btn").addEventListener("click", () => {
     localStorage.removeItem("app_unlocked");
+    document.getElementById("profile-menu-content").classList.add("hidden");
     mainApp.classList.add("hidden");
     lockScreen.classList.remove("hidden");
   });
 }
 
 function checkPasscode(input, lockView, appView, errorView) {
-  // Checks directly against the hardcoded value above
   if (input.value === CORRECT_PASSCODE) {
     localStorage.setItem("app_unlocked", "true");
     errorView.classList.add("hidden");
@@ -72,6 +74,57 @@ function checkPasscode(input, lockView, appView, errorView) {
 }
 
 // ========================================================
+// PROFILE MENU POPOVER DROPDOWN INTERACTION CONTROLLER
+// ========================================================
+function initProfileDropdown() {
+  const trigger = document.getElementById("profile-menu-btn");
+  const content = document.getElementById("profile-menu-content");
+
+  trigger.addEventListener("click", (e) => {
+    e.stopPropagation();
+    content.classList.toggle("hidden");
+  });
+
+  // Close the menu if she taps anywhere else on screen
+  document.addEventListener("click", () => {
+    content.classList.add("hidden");
+  });
+}
+
+// ========================================================
+// DATE SELECTION TOGGLE SEGMENT SEGREGATION ROUTINE
+// ========================================================
+function initDateToggleControl() {
+  const btnToday = document.getElementById("date-mode-today");
+  const btnCustom = document.getElementById("date-mode-custom");
+  const btnUnknown = document.getElementById("date-mode-unknown");
+  const customContainer = document.getElementById("custom-date-container");
+  const dateInput = document.getElementById("input-date");
+
+  function setMode(mode) {
+    activeDateMode = mode;
+    btnToday.classList.remove("active");
+    btnCustom.classList.remove("active");
+    btnUnknown.classList.remove("active");
+    customContainer.style.display = "none";
+
+    if (mode === "today") {
+      btnToday.classList.add("active");
+    } else if (mode === "custom") {
+      btnCustom.classList.add("active");
+      customContainer.style.display = "block";
+      if (!dateInput.value) dateInput.valueAsDate = new Date();
+    } else if (mode === "unknown") {
+      btnUnknown.classList.add("active");
+    }
+  }
+
+  btnToday.addEventListener("click", () => setMode("today"));
+  btnCustom.addEventListener("click", () => setMode("custom"));
+  btnUnknown.addEventListener("click", () => setMode("unknown"));
+}
+
+// ========================================================
 // VIEW ROUTING NAVIGATION & FILE HANDLING LOGIC
 // ========================================================
 function initNavigationAndForm() {
@@ -87,7 +140,8 @@ function initNavigationAndForm() {
   navAddBtn.addEventListener("click", () => {
     galleryView.classList.add("hidden");
     formView.classList.remove("hidden");
-    document.getElementById("input-date").valueAsDate = new Date();
+    // Reset date toggle choice back to 'today' default state upon opening
+    document.getElementById("date-mode-today").click();
   });
 
   formCancelBtn.addEventListener("click", () => {
@@ -112,45 +166,61 @@ function initNavigationAndForm() {
 
   formSubmitBtn.addEventListener("click", async () => {
     const name = document.getElementById("input-name").value.trim();
-    const location = document.getElementById("input-location").value.trim();
-    const date = document.getElementById("input-date").value;
-    const notes = document.getElementById("input-notes").value.trim();
+    const location =
+      document.getElementById("input-location").value.trim() || "Unknown";
+    const notes = document.getElementById("input-notes").value.trim() || "";
 
-    if (!name || !location || !date) {
-      alert("Please fill out Name, Location, and Date fields before saving.");
+    // Name validation check (the only strictly required field now)
+    if (!name) {
+      alert("Please provide a name for this keychain entry.");
       return;
     }
 
-    if (!localImageFileBlob) {
-      alert("Please take or select a photo of the keychain first!");
-      return;
+    // Resolve structural payload string based on date segmented choice
+    let dateFinalString = "Unknown";
+    if (activeDateMode === "today") {
+      const today = new Date();
+      dateFinalString = today.toISOString().split("T")[0]; // Format standard YYYY-MM-DD
+    } else if (activeDateMode === "custom") {
+      const selectedCustomDate = document.getElementById("input-date").value;
+      if (!selectedCustomDate) {
+        alert("Please choose your customized calendar date.");
+        return;
+      }
+      dateFinalString = selectedCustomDate;
     }
 
     formSubmitBtn.disabled = true;
-    formSubmitBtn.innerText = "Uploading Photo... 📸";
+    formSubmitBtn.innerText = "Processing Data... ⏳";
 
     try {
-      const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
-      const formData = new FormData();
-      formData.append("file", localImageFileBlob);
-      formData.append("upload_preset", CLOUDINARY_PRESET);
+      let secureCDNImageUrl = "";
 
-      const cloudResponse = await fetch(cloudinaryUrl, {
-        method: "POST",
-        body: formData,
-      });
+      // Image cloud sync pipeline executes ONLY if an image was selected
+      if (localImageFileBlob) {
+        formSubmitBtn.innerText = "Uploading Photo... 📸";
+        const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
+        const formData = new FormData();
+        formData.append("file", localImageFileBlob);
+        formData.append("upload_preset", CLOUDINARY_PRESET);
 
-      if (!cloudResponse.ok) throw new Error("Cloudinary media upload failed");
-      const cloudData = await cloudResponse.json();
-      const secureCDNImageUrl = cloudData.secure_url;
+        const cloudResponse = await fetch(cloudinaryUrl, {
+          method: "POST",
+          body: formData,
+        });
+        if (!cloudResponse.ok)
+          throw new Error("Cloudinary media upload failed");
+        const cloudData = await cloudResponse.json();
+        secureCDNImageUrl = cloudData.secure_url;
+      }
 
-      formSubmitBtn.innerText = "Saving to catalog... ☁️";
+      formSubmitBtn.innerText = "Saving to collection... ☁️";
 
       const payload = {
         name: name,
         location: location,
-        date: date,
-        imageUrl: secureCDNImageUrl,
+        date: dateFinalString,
+        imageUrl: secureCDNImageUrl, // Blank string if skipped
         notes: notes,
       };
 
@@ -162,7 +232,7 @@ function initNavigationAndForm() {
         body: JSON.stringify(payload),
       });
 
-      alert("Success! Keychain saved into our travel catalog.");
+      alert("Success! Keychain catalog updated.");
       keychainForm.reset();
       imagePreview.innerHTML = "";
       localImageFileBlob = null;
@@ -171,7 +241,9 @@ function initNavigationAndForm() {
       loadGalleryData();
     } catch (err) {
       console.error(err);
-      alert("Process stopped. Image hosting pipeline or sheet storage failed.");
+      alert(
+        "Process stopped. Storage update sequence encountered a pipeline error.",
+      );
     } finally {
       formSubmitBtn.disabled = false;
       formSubmitBtn.innerText = "Save to Catalog";
@@ -191,7 +263,7 @@ function loadGalleryData() {
       grid.innerHTML = "";
 
       if (!data || data.length === 0) {
-        grid.innerHTML = `<div class="empty-text">No keychains saved yet. Tap ＋ to start!</div>`;
+        grid.innerHTML = `<div class="empty-text">No keychains saved yet. Tap Add to start!</div>`;
         return;
       }
 
@@ -203,17 +275,11 @@ function loadGalleryData() {
           ? `<img src="${item.imageurl}" class="card-img" alt="Keychain image" loading="lazy">`
           : `<div class="card-img-placeholder">🔑</div>`;
 
-        const notesSegment = item.notes
-          ? `<p class="meta-notes">"${item.notes}"</p>`
-          : "";
-
+        // COMPACT DESIGN: The card thumbnail strictly renders ONLY image and title name
         card.innerHTML = `
           ${imageSegment}
           <div class="card-content">
             <h3>${item.name}</h3>
-            <p class="meta-location">📍 ${item.location}</p>
-            <p class="meta-date">📅 ${item.date}</p>
-            ${notesSegment}
           </div>
         `;
 
@@ -237,12 +303,12 @@ function openFocusMode(item) {
   document.getElementById("focusImage").src = item.imageurl || "";
   document.getElementById("focusName").innerText =
     item.name || "Unnamed Keychain";
-  document.getElementById("focusLocation").innerText = item.location
-    ? `📍 ${item.location}`
-    : "📍 Unknown";
-  document.getElementById("focusDate").innerText = item.date
-    ? `📅 ${item.date}`
-    : "";
+
+  // Displays historical metadata ONLY in individual item details layout view mode
+  document.getElementById("focusLocation").innerText =
+    `From: ${item.location || "Unknown"}`;
+  document.getElementById("focusDate").innerText =
+    `📅 ${item.date || "Unknown"}`;
 
   const notesBox = document.getElementById("focusNotes");
   if (item.notes && item.notes.trim() !== "") {
@@ -253,7 +319,6 @@ function openFocusMode(item) {
   }
 
   const deleteBtn = document.getElementById("focus-delete-btn");
-
   const newDeleteBtn = deleteBtn.cloneNode(true);
   deleteBtn.parentNode.replaceChild(newDeleteBtn, deleteBtn);
 

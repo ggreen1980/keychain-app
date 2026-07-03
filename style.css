@@ -482,6 +482,105 @@ input[type="file"] {
 .danger-link-btn:hover {
   background: #fdf2f2;
 }
+
+/* Header Action Group Alignment */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* New Medium Add Button */
+.pill-add-btn {
+  background: #4a90e2;
+  color: white;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background 0.2s;
+}
+.pill-add-btn:hover {
+  background: #357abd;
+}
+
+/* Profile Dropdown Base Architecture */
+.profile-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.profile-trigger {
+  background: #f0f2f5;
+  border: 1px solid #e4e6eb;
+  color: #333;
+  padding: 8px 14px;
+  border-radius: 18px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.dropdown-content {
+  position: absolute;
+  right: 0;
+  top: 110%;
+  background-color: white;
+  min-width: 120px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  z-index: 100;
+  overflow: hidden;
+  border: 1px solid #eaeaea;
+}
+
+.dropdown-logout-btn {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 12px;
+  text-align: left;
+  color: #c93b3b;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.dropdown-logout-btn:hover {
+  background-color: #fff5f5;
+}
+
+/* Flexible Date Control System Segment Toggles */
+.date-toggle-group {
+  display: flex;
+  gap: 5px;
+  background: #f0f2f5;
+  padding: 4px;
+  border-radius: 8px;
+}
+
+.toggle-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 8px 5px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #666;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.toggle-btn.active {
+  background: white;
+  color: #333;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  font-weight: 600;
+}
+
 @media (min-width: 600px) {
   .gallery-grid {
     grid-template-columns: repeat(3, 1fr);
