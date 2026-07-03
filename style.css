@@ -161,7 +161,7 @@ body {
 }
 
 /* ========================================================
-   FLOATING ACTION BUTTON (FAB) ENGINE
+   FLOATING ACTION BUTTON (FAB) ENGINE - REFINED CHARCOAL
    ======================================================== */
 .fab-add-btn {
   position: fixed;
@@ -170,24 +170,31 @@ body {
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background-color: #4b9b7d; /* Soft vintage mint green */
-  color: var(--petal-white); /* Crisp white '+' symbol */
-  border: none;
-  font-size: 2rem;
-  font-weight: 400; /* Perfect weight for a clean '+' symbol */
+
+  /* Background matches your structural text color */
+  background-color: var(--rich-charcoal);
+
+  /* Plus symbol matches the header brand purple */
+  color: var(--monica-purple);
+
+  /* Text shadow adds depth, keeping the purple sharp against the dark background */
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.75);
+
+  font-size: 2.2rem; /* Slightly bumped up to make the accent color pop */
+  font-weight: 600; /* Clean, prominent weight */
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-  z-index: 90; /* Keeps it above the cards but below the full modals */
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3); /* Matches the deeper button tone */
+  z-index: 90;
   transition:
     transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275),
     background-color 0.2s;
 }
 
 .fab-add-btn:hover {
-  background-color: #3d8066;
+  background-color: #3d3a44; /* Subtle lighter shift on hover */
   transform: scale(1.05);
 }
 
