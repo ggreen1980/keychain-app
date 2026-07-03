@@ -153,26 +153,42 @@ body {
   gap: 12px;
 }
 
-/* Rounded Medium Buttons */
-.pill-add-btn {
-  background: var(--peephole-yellow);
+/* ========================================================
+   FLOATING ACTION BUTTON (FAB) ENGINE
+   ======================================================== */
+.fab-add-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: var(--peephole-yellow);
   color: var(--rich-charcoal);
   border: none;
-  padding: 8px 20px;
-  border-radius: 16px;
-  font-size: 0.95rem;
-  font-weight: 700;
+  font-size: 2rem;
+  font-weight: 400; /* Perfect weight for a clean '+' symbol */
+  display: flex;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-  transition:
-    transform 0.1s,
-    background-color 0.2s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  z-index: 90; /* Keeps it above the cards but below the full modals */
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.2s;
 }
-.pill-add-btn:hover {
-  background: #e5bf45;
+
+.fab-add-btn:hover {
+  background-color: #e5bf45;
+  transform: scale(1.05);
 }
-.pill-add-btn:active {
-  transform: scale(0.96);
+
+.fab-add-btn:active {
+  transform: scale(0.95);
+}
+
+/* Ensure the layout grid has a little breathing room at the bottom so cards don't get hidden behind the FAB */
+.gallery-grid {
+  padding-bottom: 90px !important;
 }
 
 /* Profile Dropdown Trigger */
