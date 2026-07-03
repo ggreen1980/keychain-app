@@ -4,9 +4,9 @@
 const API_URL =
   "https://script.google.com/macros/s/AKfycbxPoyWNVcpBaFSJmTm1BoZTd01EfouS13emZPQ2lJvCK5MyW8zMlgQ-0LyYCWU85KFjOw/exec";
 
-const CORRECT_PASSCODE = "4177"; // e.g., "1234"
+const CORRECT_PASSCODE = "4177";
 const CLOUDINARY_CLOUD_NAME = "xzpkydjm";
-const CLOUDINARY_PRESET = "keychain_preset"; // The preset name you created
+const CLOUDINARY_PRESET = "keychain_preset";
 
 let localImageFileBlob = null;
 
@@ -15,13 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initAppSecurity();
   initNavigationAndForm();
   initFocusModalEvents();
-  initPasscodeManagementEvents(); // Integrated control system
 });
-
-// Helper to check what the current active passcode is
-function getActivePasscode() {
-  return localStorage.getItem("custom_app_passcode") || CORRECT_PASSCODE;
-}
 
 // ========================================================
 // SECURITY LAYER WITH PERSISTENT MEMORY
@@ -59,7 +53,8 @@ function initAppSecurity() {
 }
 
 function checkPasscode(input, lockView, appView, errorView) {
-  if (input.value === getActivePasscode()) {
+  // Checks directly against the hardcoded value above
+  if (input.value === CORRECT_PASSCODE) {
     localStorage.setItem("app_unlocked", "true");
     errorView.classList.add("hidden");
     lockView.classList.add("hidden");
@@ -257,15 +252,12 @@ function openFocusMode(item) {
     notesBox.style.display = "none";
   }
 
-  // --- NEW DELETE LOGIC FOR MODAL ---
   const deleteBtn = document.getElementById("focus-delete-btn");
 
-  // Wipe out any older event listeners so clicking doesn't trigger multiple times
   const newDeleteBtn = deleteBtn.cloneNode(true);
   deleteBtn.parentNode.replaceChild(newDeleteBtn, deleteBtn);
 
   newDeleteBtn.addEventListener("click", async () => {
-    // Safety prompt check
     const confirmed = confirm(
       `Are you sure you want to delete "${item.name}" from the collection?`,
     );
@@ -282,9 +274,9 @@ function openFocusMode(item) {
     newDeleteBtn.innerText = "Deleting... ⏳";
 
     try {
-      const response = await fetch(API_URL, {
+      await fetch(API_URL, {
         method: "POST",
-        mode: "no-cors", // Bypasses browser CORS policy blocks
+        mode: "no-cors",
         cache: "no-cache",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -294,8 +286,8 @@ function openFocusMode(item) {
       });
 
       alert("Item deleted successfully!");
-      document.getElementById("focusModal").style.display = "none"; // Close view
-      loadGalleryData(); // Refresh the main dashboard view automatically!
+      document.getElementById("focusModal").style.display = "none";
+      loadGalleryData();
     } catch (err) {
       console.error(err);
       alert("Could not complete deletion request.");
@@ -325,47 +317,4 @@ function initFocusModalEvents() {
       }
     });
   }
-}
-
-// ========================================================
-// PASSCODE MANAGEMENT MODULE
-// ========================================================
-function initPasscodeManagementEvents() {
-  const modal = document.getElementById("passcodeModal");
-  const changeBtn = document.getElementById("nav-change-passcode-btn");
-  const cancelBtn = document.getElementById("cancel-passcode-btn");
-  const saveBtn = document.getElementById("save-passcode-btn");
-
-  const oldInput = document.getElementById("old-passcode-input");
-  const newInput = document.getElementById("new-passcode-input");
-
-  changeBtn.addEventListener("click", () => {
-    oldInput.value = "";
-    newInput.value = "";
-    modal.style.display = "flex";
-  });
-
-  cancelBtn.addEventListener("click", () => {
-    modal.style.display = "none";
-  });
-
-  saveBtn.addEventListener("click", () => {
-    const activePasscode = getActivePasscode();
-
-    if (oldInput.value !== activePasscode) {
-      alert("Current passcode is incorrect. Please try again.");
-      oldInput.value = "";
-      return;
-    }
-
-    if (newInput.value.trim() === "") {
-      alert("New passcode cannot be blank.");
-      return;
-    }
-
-    // Save new code permanently to the phone browser's storage
-    localStorage.setItem("custom_app_passcode", newInput.value.trim());
-    alert("Passcode updated successfully!");
-    modal.style.display = "none";
-  });
 }
