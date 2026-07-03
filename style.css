@@ -281,7 +281,7 @@ body {
   flex-direction: column;
 
   /* Subtle theme alignment: 1px border using your purple at 12% opacity */
-  border: 1px solid rgba(111, 82, 163, 0.35);
+  border: 2px solid rgba(111, 82, 163, 0.35);
 }
 
 .keychain-card:hover {
