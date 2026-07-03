@@ -9,7 +9,7 @@ const CLOUDINARY_CLOUD_NAME = "xzpkydjm";
 const CLOUDINARY_PRESET = "keychain_preset";
 
 let localImageFileBlob = null;
-let activeDateMode = "today"; // Tracks choices: 'today', 'custom', 'unknown'
+let activeDateMode = "today";
 
 // Initialization Hook
 document.addEventListener("DOMContentLoaded", () => {
@@ -46,7 +46,6 @@ function initAppSecurity() {
     }
   });
 
-  // LOGOUT INTERACTION
   document.getElementById("logout-btn").addEventListener("click", () => {
     localStorage.removeItem("app_unlocked");
     document.getElementById("profile-menu-content").classList.add("hidden");
@@ -74,25 +73,26 @@ function checkPasscode(input, lockView, appView, errorView) {
 }
 
 // ========================================================
-// PROFILE MENU POPOVER DROPDOWN INTERACTION CONTROLLER
+// PROFILE MENU DROPDOWN INTERACTION
 // ========================================================
 function initProfileDropdown() {
   const trigger = document.getElementById("profile-menu-btn");
   const content = document.getElementById("profile-menu-content");
+
+  if (!trigger || !content) return;
 
   trigger.addEventListener("click", (e) => {
     e.stopPropagation();
     content.classList.toggle("hidden");
   });
 
-  // Close the menu if she taps anywhere else on screen
   document.addEventListener("click", () => {
     content.classList.add("hidden");
   });
 }
 
 // ========================================================
-// DATE SELECTION TOGGLE SEGMENT SEGREGATION ROUTINE
+// DATE SELECTION TOGGLE CONTROLLER
 // ========================================================
 function initDateToggleControl() {
   const btnToday = document.getElementById("date-mode-today");
@@ -101,19 +101,21 @@ function initDateToggleControl() {
   const customContainer = document.getElementById("custom-date-container");
   const dateInput = document.getElementById("input-date");
 
+  if (!btnToday || !btnCustom || !btnUnknown) return;
+
   function setMode(mode) {
     activeDateMode = mode;
     btnToday.classList.remove("active");
     btnCustom.classList.remove("active");
     btnUnknown.classList.remove("active");
-    customContainer.style.display = "none";
+    if (customContainer) customContainer.style.display = "none";
 
     if (mode === "today") {
       btnToday.classList.add("active");
     } else if (mode === "custom") {
       btnCustom.classList.add("active");
-      customContainer.style.display = "block";
-      if (!dateInput.value) dateInput.valueAsDate = new Date();
+      if (customContainer) customContainer.style.display = "block";
+      if (dateInput && !dateInput.value) dateInput.valueAsDate = new Date();
     } else if (mode === "unknown") {
       btnUnknown.classList.add("active");
     }
@@ -137,118 +139,129 @@ function initNavigationAndForm() {
   const imagePreview = document.getElementById("image-preview");
   const keychainForm = document.getElementById("keychain-form");
 
+  if (!navAddBtn) return;
+
   navAddBtn.addEventListener("click", () => {
-    galleryView.classList.add("hidden");
-    formView.classList.remove("hidden");
-    // Reset date toggle choice back to 'today' default state upon opening
-    document.getElementById("date-mode-today").click();
+    if (galleryView) galleryView.classList.add("hidden");
+    if (formView) formView.classList.remove("hidden");
+    const todayBtn = document.getElementById("date-mode-today");
+    if (todayBtn) todayBtn.click();
   });
 
-  formCancelBtn.addEventListener("click", () => {
-    keychainForm.reset();
-    imagePreview.innerHTML = "";
-    localImageFileBlob = null;
-    formView.classList.add("hidden");
-    galleryView.classList.remove("hidden");
-  });
+  if (formCancelBtn) {
+    formCancelBtn.addEventListener("click", () => {
+      if (keychainForm) keychainForm.reset();
+      if (imagePreview) imagePreview.innerHTML = "";
+      localImageFileBlob = null;
+      if (formView) formView.classList.add("hidden");
+      if (galleryView) galleryView.classList.remove("hidden");
+    });
+  }
 
-  fileInput.addEventListener("change", (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
+  if (fileInput) {
+    fileInput.addEventListener("change", (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
 
-    localImageFileBlob = file;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      imagePreview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
-    };
-    reader.readAsDataURL(file);
-  });
+      localImageFileBlob = file;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        if (imagePreview)
+          imagePreview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
 
-  formSubmitBtn.addEventListener("click", async () => {
-    const name = document.getElementById("input-name").value.trim();
-    const location =
-      document.getElementById("input-location").value.trim() || "Unknown";
-    const notes = document.getElementById("input-notes").value.trim() || "";
+  if (formSubmitBtn) {
+    formSubmitBtn.addEventListener("click", async () => {
+      const nameInput = document.getElementById("input-name");
+      const locationInput = document.getElementById("input-location");
+      const notesInput = document.getElementById("input-notes");
 
-    // Name validation check (the only strictly required field now)
-    if (!name) {
-      alert("Please provide a name for this keychain entry.");
-      return;
-    }
+      const name = nameInput ? nameInput.value.trim() : "";
+      const location =
+        (locationInput && locationInput.value.trim()) || "Unknown";
+      const notes = (notesInput && notesInput.value.trim()) || "";
 
-    // Resolve structural payload string based on date segmented choice
-    let dateFinalString = "Unknown";
-    if (activeDateMode === "today") {
-      const today = new Date();
-      dateFinalString = today.toISOString().split("T")[0]; // Format standard YYYY-MM-DD
-    } else if (activeDateMode === "custom") {
-      const selectedCustomDate = document.getElementById("input-date").value;
-      if (!selectedCustomDate) {
-        alert("Please choose your customized calendar date.");
+      if (!name) {
+        alert("Please provide a name for this keychain entry.");
         return;
       }
-      dateFinalString = selectedCustomDate;
-    }
 
-    formSubmitBtn.disabled = true;
-    formSubmitBtn.innerText = "Processing Data... ⏳";
-
-    try {
-      let secureCDNImageUrl = "";
-
-      // Image cloud sync pipeline executes ONLY if an image was selected
-      if (localImageFileBlob) {
-        formSubmitBtn.innerText = "Uploading Photo... 📸";
-        const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
-        const formData = new FormData();
-        formData.append("file", localImageFileBlob);
-        formData.append("upload_preset", CLOUDINARY_PRESET);
-
-        const cloudResponse = await fetch(cloudinaryUrl, {
-          method: "POST",
-          body: formData,
-        });
-        if (!cloudResponse.ok)
-          throw new Error("Cloudinary media upload failed");
-        const cloudData = await cloudResponse.json();
-        secureCDNImageUrl = cloudData.secure_url;
+      let dateFinalString = "Unknown";
+      if (activeDateMode === "today") {
+        const today = new Date();
+        dateFinalString = today.toISOString().split("T")[0];
+      } else if (activeDateMode === "custom") {
+        const dateInputElem = document.getElementById("input-date");
+        const selectedCustomDate = dateInputElem ? dateInputElem.value : "";
+        if (!selectedCustomDate) {
+          alert("Please choose your customized calendar date.");
+          return;
+        }
+        dateFinalString = selectedCustomDate;
       }
 
-      formSubmitBtn.innerText = "Saving to collection... ☁️";
+      formSubmitBtn.disabled = true;
+      formSubmitBtn.innerText = "Processing Data... ⏳";
 
-      const payload = {
-        name: name,
-        location: location,
-        date: dateFinalString,
-        imageUrl: secureCDNImageUrl, // Blank string if skipped
-        notes: notes,
-      };
+      try {
+        let secureCDNImageUrl = "";
 
-      await fetch(API_URL, {
-        method: "POST",
-        mode: "no-cors",
-        cache: "no-cache",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+        if (localImageFileBlob) {
+          formSubmitBtn.innerText = "Uploading Photo... 📸";
+          const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
+          const formData = new FormData();
+          formData.append("file", localImageFileBlob);
+          formData.append("upload_preset", CLOUDINARY_PRESET);
 
-      alert("Success! Keychain catalog updated.");
-      keychainForm.reset();
-      imagePreview.innerHTML = "";
-      localImageFileBlob = null;
-      formView.classList.add("hidden");
-      galleryView.classList.remove("hidden");
-      loadGalleryData();
-    } catch (err) {
-      console.error(err);
-      alert(
-        "Process stopped. Storage update sequence encountered a pipeline error.",
-      );
-    } finally {
-      formSubmitBtn.disabled = false;
-      formSubmitBtn.innerText = "Save to Catalog";
-    }
-  });
+          const cloudResponse = await fetch(cloudinaryUrl, {
+            method: "POST",
+            body: formData,
+          });
+          if (!cloudResponse.ok)
+            throw new Error("Cloudinary media upload failed");
+          const cloudData = await cloudResponse.json();
+          secureCDNImageUrl = cloudData.secure_url;
+        }
+
+        formSubmitBtn.innerText = "Saving to collection... ☁️";
+
+        const payload = {
+          name: name,
+          location: location,
+          date: dateFinalString,
+          imageUrl: secureCDNImageUrl,
+          notes: notes,
+        };
+
+        await fetch(API_URL, {
+          method: "POST",
+          mode: "no-cors",
+          cache: "no-cache",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        alert("Success! Keychain catalog updated.");
+        if (keychainForm) keychainForm.reset();
+        if (imagePreview) imagePreview.innerHTML = "";
+        localImageFileBlob = null;
+        if (formView) formView.classList.add("hidden");
+        if (galleryView) galleryView.classList.remove("hidden");
+        loadGalleryData();
+      } catch (err) {
+        console.error(err);
+        alert(
+          "Process stopped. Storage update sequence encountered a pipeline error.",
+        );
+      } finally {
+        formSubmitBtn.disabled = false;
+        formSubmitBtn.innerText = "Save to Catalog";
+      }
+    });
+  }
 }
 
 // ========================================================
@@ -256,6 +269,7 @@ function initNavigationAndForm() {
 // ========================================================
 function loadGalleryData() {
   const grid = document.getElementById("gallery-grid");
+  if (!grid) return;
 
   fetch(API_URL)
     .then((res) => res.json())
@@ -275,7 +289,6 @@ function loadGalleryData() {
           ? `<img src="${item.imageurl}" class="card-img" alt="Keychain image" loading="lazy">`
           : `<div class="card-img-placeholder">🔑</div>`;
 
-        // COMPACT DESIGN: The card thumbnail strictly renders ONLY image and title name
         card.innerHTML = `
           ${imageSegment}
           <div class="card-content">
@@ -299,24 +312,22 @@ function loadGalleryData() {
 // ========================================================
 // DETAIL CARD MODAL FOCUS VIEW CONTROLLER
 // ========================================================
-
 function openFocusMode(item) {
-  document.getElementById("focusImage").src = item.imageurl || "";
-  document.getElementById("focusName").innerText =
-    item.name || "Unnamed Keychain";
+  const imgElem = document.getElementById("focusImage");
+  const nameElem = document.getElementById("focusName");
+  const locElem = document.getElementById("focusLocation");
+  const dateElem = document.getElementById("focusDate");
+  const notesBox = document.getElementById("focusNotes");
 
-  // Displays historical metadata ONLY in individual item details layout view mode
-  document.getElementById("focusLocation").innerText =
-    `From: ${item.location || "Unknown"}`;
+  if (imgElem) imgElem.src = item.imageurl || "";
+  if (nameElem) nameElem.innerText = item.name || "Unnamed Keychain";
+  if (locElem) locElem.innerText = `From: ${item.location || "Unknown"}`;
 
-  // DATE FORMATTING PIPELINE: Converts YYYY-MM-DD strings cleanly into "Month Day, Year"
   let formattedDate = "Unknown";
   if (item.date && item.date.toLowerCase() !== "unknown") {
     try {
-      // Split by hyphen to avoid timezone shifting drops or offsets
       const parts = item.date.split("-");
       if (parts.length === 3) {
-        // Javascript Date months are 0-indexed (0 = January)
         const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
         formattedDate = dateObj.toLocaleDateString("en-US", {
           month: "long",
@@ -324,7 +335,6 @@ function openFocusMode(item) {
           year: "numeric",
         });
       } else {
-        // Fallback for any standard unrecognized timestamp formats
         const dateObj = new Date(item.date);
         if (!isNaN(dateObj.getTime())) {
           formattedDate = dateObj.toLocaleDateString("en-US", {
@@ -336,64 +346,69 @@ function openFocusMode(item) {
       }
     } catch (e) {
       console.error("Date parsing error: ", e);
-      formattedDate = item.date; // Use raw string if everything fails
+      formattedDate = item.date;
     }
   }
-  document.getElementById("focusDate").innerText = `📅 ${formattedDate}`;
+  if (dateElem) dateElem.innerText = `📅 ${formattedDate}`;
 
-  const notesBox = document.getElementById("focusNotes");
-  if (item.notes && item.notes.trim() !== "") {
-    notesBox.innerText = `"${item.notes}"`;
-    notesBox.style.display = "block";
-  } else {
-    notesBox.style.display = "none";
+  if (notesBox) {
+    if (item.notes && item.notes.trim() !== "") {
+      notesBox.innerText = `"${item.notes}"`;
+      notesBox.style.display = "block";
+    } else {
+      notesBox.style.display = "none";
+    }
   }
 
   const deleteBtn = document.getElementById("focus-delete-btn");
-  const newDeleteBtn = deleteBtn.cloneNode(true);
-  deleteBtn.parentNode.replaceChild(newDeleteBtn, deleteBtn);
+  if (deleteBtn) {
+    const newDeleteBtn = deleteBtn.cloneNode(true);
+    deleteBtn.parentNode.replaceChild(newDeleteBtn, deleteBtn);
 
-  newDeleteBtn.addEventListener("click", async () => {
-    const confirmed = confirm(
-      `Are you sure you want to delete "${item.name}" from the collection?`,
-    );
-    if (!confirmed) return;
-
-    if (!item.timestamp) {
-      alert(
-        "Error: This older item does not have a timestamp tracking ID and cannot be deleted via the app.",
+    newDeleteBtn.addEventListener("click", async () => {
+      const confirmed = confirm(
+        `Are you sure you want to delete "${item.name}" from the collection?`,
       );
-      return;
-    }
+      if (!confirmed) return;
 
-    newDeleteBtn.disabled = true;
-    newDeleteBtn.innerText = "Deleting... ⏳";
+      if (!item.timestamp) {
+        alert(
+          "Error: This older item does not have a timestamp tracking ID and cannot be deleted via the app.",
+        );
+        return;
+      }
 
-    try {
-      await fetch(API_URL, {
-        method: "POST",
-        mode: "no-cors",
-        cache: "no-cache",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "delete",
-          timestamp: item.timestamp,
-        }),
-      });
+      newDeleteBtn.disabled = true;
+      newDeleteBtn.innerText = "Deleting... ⏳";
 
-      alert("Item deleted successfully!");
-      document.getElementById("focusModal").style.display = "none";
-      loadGalleryData();
-    } catch (err) {
-      console.error(err);
-      alert("Could not complete deletion request.");
-    } finally {
-      newDeleteBtn.disabled = false;
-      newDeleteBtn.innerText = "🗑️ Delete Entry";
-    }
-  });
+      try {
+        await fetch(API_URL, {
+          method: "POST",
+          mode: "no-cors",
+          cache: "no-cache",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            action: "delete",
+            timestamp: item.timestamp,
+          }),
+        });
 
-  document.getElementById("focusModal").style.display = "flex";
+        alert("Item deleted successfully!");
+        const modal = document.getElementById("focusModal");
+        if (modal) modal.style.display = "none";
+        loadGalleryData();
+      } catch (err) {
+        console.error(err);
+        alert("Could not complete deletion request.");
+      } finally {
+        newDeleteBtn.disabled = false;
+        newDeleteBtn.innerText = "🗑️ Delete Entry";
+      }
+    });
+  }
+
+  const modal = document.getElementById("focusModal");
+  if (modal) modal.style.display = "flex";
 }
 
 function initFocusModalEvents() {
@@ -402,7 +417,7 @@ function initFocusModalEvents() {
 
   if (closeBtn) {
     closeBtn.addEventListener("click", () => {
-      modal.style.display = "none";
+      if (modal) modal.style.display = "none";
     });
   }
 
