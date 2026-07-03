@@ -281,7 +281,7 @@ body {
   flex-direction: column;
 
   /* Subtle theme alignment: 1px border using your purple at 12% opacity */
-  border: 1px solid rgba(111, 82, 163, 0.12);
+  border: 1px solid rgba(111, 82, 163, 0.35);
 }
 
 .keychain-card:hover {
@@ -480,6 +480,7 @@ body {
 
   /* High hierarchy statement: Solid purple anchor on the focused element */
   border-top: 4px solid var(--monica-purple);
+  margin-top: 24px;
 }
 
 @keyframes modalPop {
@@ -538,9 +539,27 @@ body {
   position: absolute;
   top: 20px;
   right: 20px;
-  font-size: 2.5rem;
-  color: var(--petal-white);
+  font-size: 1.8rem; /* Slightly balanced down from 2.5rem to match the circular base */
+
+  /* TURNED PURPLE: Matches your branding color */
+  color: var(--monica-purple);
+
+  /* Adds a soft background badge so it pops beautifully over the dark backdrop overlay */
+  background: var(--petal-white);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+
   cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.focus-close:hover {
+  transform: scale(1.08);
 }
 
 .danger-link-btn {
