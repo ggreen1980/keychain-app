@@ -161,7 +161,7 @@ body {
 }
 
 /* ========================================================
-   FLOATING ACTION BUTTON (FAB) ENGINE - REFINED CHARCOAL
+   FLOATING ACTION BUTTON (FAB) ENGINE - REFINED CONCRETE
    ======================================================== */
 .fab-add-btn {
   position: fixed;
@@ -171,22 +171,23 @@ body {
   height: 56px;
   border-radius: 50%;
 
-  /* Background matches your structural text color */
-  background-color: var(--rich-charcoal);
+  /* Lighter, warm stone grey gives the purple room to breathe */
+  background-color: #d8d6e0;
+  border: 1px solid rgba(111, 82, 163, 0.15); /* Soft purple border to tie it together */
 
-  /* Plus symbol matches the header brand purple */
+  /* Plus symbol matches the header brand purple sharply */
   color: var(--monica-purple);
 
-  /* Text shadow adds depth, keeping the purple sharp against the dark background */
-  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.75);
+  /* Clean, crisp drop shadow beneath the text symbol */
+  text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.6); /* Soft light backing to sharpen it */
 
-  font-size: 2.2rem; /* Slightly bumped up to make the accent color pop */
-  font-weight: 600; /* Clean, prominent weight */
+  font-size: 2.2rem;
+  font-weight: 700; /* Made slightly thicker to maximize visibility */
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3); /* Matches the deeper button tone */
+  box-shadow: 0 4px 12px rgba(45, 42, 50, 0.15);
   z-index: 90;
   transition:
     transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275),
@@ -194,7 +195,7 @@ body {
 }
 
 .fab-add-btn:hover {
-  background-color: #3d3a44; /* Subtle lighter shift on hover */
+  background-color: #cbcae3; /* Slightly richer tint on hover */
   transform: scale(1.05);
 }
 
@@ -263,7 +264,9 @@ body {
   margin: 0 auto;
 }
 
-/* High depth card design */
+/* ========================================================
+   MAIN GALLERY CATALOG & THUMBNAILS - TINTED FRAMING
+   ======================================================== */
 .keychain-card {
   background: var(--petal-white);
   border-radius: 16px;
@@ -271,15 +274,20 @@ body {
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
   cursor: pointer;
   transition:
-    transform 0.2s,
-    box-shadow 0.2s;
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
   display: flex;
   flex-direction: column;
+
+  /* Subtle theme alignment: 1px border using your purple at 12% opacity */
+  border: 1px solid rgba(111, 82, 163, 0.12);
 }
 
 .keychain-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 6px 14px rgba(111, 82, 163, 0.15);
+  border-color: rgba(111, 82, 163, 0.35); /* Sharpens up when interactive */
 }
 
 .card-img {
@@ -444,7 +452,7 @@ body {
 }
 
 /* ========================================================
-   FOCUSED DETAIL MODAL POPUP
+   FOCUSED DETAIL MODAL POPUP - BOLD TOP ACCENT
    ======================================================== */
 .focus-modal {
   position: fixed;
@@ -469,6 +477,9 @@ body {
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   animation: modalPop 0.25s ease-out;
+
+  /* High hierarchy statement: Solid purple anchor on the focused element */
+  border-top: 4px solid var(--monica-purple);
 }
 
 @keyframes modalPop {
