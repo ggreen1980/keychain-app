@@ -101,15 +101,34 @@ body {
   width: 100%;
   padding: 14px;
   border-radius: 16px;
-  border: 2px solid #eaeaea;
-  font-size: 1.2rem;
+  /* Permanent Monica Purple border setup */
+  border: 2px solid var(--monica-purple);
+  background-color: var(--petal-white);
+  font-size: 1.4rem;
   text-align: center;
   letter-spacing: 6px;
   margin-bottom: 20px;
   outline: none;
+  font-weight: 700;
+  color: var(--rich-charcoal);
+  transition:
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+
+  /* Colorizes the password dots to Peephole Yellow on compatible mobile/desktop engines */
+  -webkit-text-fill-color: var(--peephole-yellow);
 }
+
 .lock-box input:focus {
   border-color: var(--monica-purple);
+  /* Interactive glow effect using your purple */
+  box-shadow: 0 0 0 4px rgba(111, 82, 163, 0.15);
+}
+
+/* Enhances the error placeholder state if code is incorrect */
+.lock-box input.error-shake {
+  border-color: var(--error-color) !important;
+  box-shadow: 0 0 0 4px rgba(217, 83, 79, 0.2) !important;
 }
 
 /* ========================================================
