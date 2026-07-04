@@ -31,39 +31,48 @@ function initAppSecurity() {
   const errorMsg = document.getElementById("error-message");
 
   if (localStorage.getItem("app_unlocked") === "true") {
-    lockScreen.classList.add("hidden");
-    mainApp.classList.remove("hidden");
+    if (lockScreen) lockScreen.classList.add("hidden");
+    if (mainApp) mainApp.classList.remove("hidden");
     loadGalleryData();
   }
 
-  loginBtn.addEventListener("click", () => {
-    checkPasscode(passcodeInput, lockScreen, mainApp, errorMsg);
-  });
-
-  passcodeInput.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") {
+  if (loginBtn) {
+    loginBtn.addEventListener("click", () => {
       checkPasscode(passcodeInput, lockScreen, mainApp, errorMsg);
-    }
-  });
+    });
+  }
 
-  document.getElementById("logout-btn").addEventListener("click", () => {
-    localStorage.removeItem("app_unlocked");
-    document.getElementById("profile-menu-content").classList.add("hidden");
-    mainApp.classList.add("hidden");
-    lockScreen.classList.remove("hidden");
-  });
+  if (passcodeInput) {
+    passcodeInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        checkPasscode(passcodeInput, lockScreen, mainApp, errorMsg);
+      }
+    });
+  }
+
+  const logoutBtn = document.getElementById("logout-btn");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      localStorage.removeItem("app_unlocked");
+      const profileMenu = document.getElementById("profile-menu-content");
+      if (profileMenu) profileMenu.classList.add("hidden");
+      if (mainApp) mainApp.classList.add("hidden");
+      if (lockScreen) lockScreen.classList.remove("hidden");
+    });
+  }
 }
 
 function checkPasscode(input, lockView, appView, errorView) {
+  if (!input) return;
   if (input.value === CORRECT_PASSCODE) {
     localStorage.setItem("app_unlocked", "true");
-    errorView.classList.add("hidden");
-    lockView.classList.add("hidden");
-    appView.classList.remove("hidden");
+    if (errorView) errorView.classList.add("hidden");
+    if (lockView) lockView.classList.add("hidden");
+    if (appView) appView.classList.remove("hidden");
     input.value = "";
     loadGalleryData();
   } else {
-    errorView.classList.remove("hidden");
+    if (errorView) errorView.classList.remove("hidden");
     input.value = "";
     input.classList.add("error-shake");
     setTimeout(() => {
@@ -76,8 +85,9 @@ function checkPasscode(input, lockView, appView, errorView) {
 // PROFILE MENU DROPDOWN INTERACTION
 // ========================================================
 function initProfileDropdown() {
-  const trigger = document.getElementById("profile-btn");
-  const content = document.getElementById("dropdown-menu");
+  // Corrected IDs to match your HTML anchors
+  const trigger = document.getElementById("profile-menu-btn");
+  const content = document.getElementById("profile-menu-content");
 
   if (!trigger || !content) return;
 
@@ -132,8 +142,6 @@ function initDateToggleControl() {
 function initNavigationAndForm() {
   const galleryView = document.getElementById("gallery-view");
   const formView = document.getElementById("form-view");
-
-  // FIX: Realigned element mapper target to target the new floating button ID
   const addBtn = document.getElementById("add-btn");
 
   const formCancelBtn = document.getElementById("form-cancel-btn");
@@ -145,11 +153,14 @@ function initNavigationAndForm() {
   if (addBtn) {
     addBtn.addEventListener("click", (e) => {
       e.preventDefault();
-      if (galleryView) galleryView.classList.add("hidden");
-      if (formView) formView.classList.remove("hidden");
+      e.stopPropagation();
 
-      // Hide the floating action button itself while form view is filled
-      addBtn.classList.add("hidden");
+      if (formView) formView.classList.remove("hidden");
+      if (galleryView) galleryView.classList.add("hidden");
+
+      setTimeout(() => {
+        addBtn.classList.add("hidden");
+      }, 50);
 
       const todayBtn = document.getElementById("date-mode-today");
       if (todayBtn) todayBtn.click();
@@ -164,7 +175,6 @@ function initNavigationAndForm() {
       if (formView) formView.classList.add("hidden");
       if (galleryView) galleryView.classList.remove("hidden");
 
-      // Restore floating button visibility upon returning to grid view
       if (addBtn) addBtn.classList.remove("hidden");
     });
   }
@@ -262,7 +272,6 @@ function initNavigationAndForm() {
         if (formView) formView.classList.add("hidden");
         if (galleryView) galleryView.classList.remove("hidden");
 
-        // Restore floating button visibility upon card compile completion
         if (addBtn) addBtn.classList.remove("hidden");
 
         loadGalleryData();

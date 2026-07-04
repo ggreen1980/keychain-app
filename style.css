@@ -43,9 +43,9 @@ body {
    ======================================================== */
 .header-logo h1 {
   font-family: "Playfair Display", serif;
-  font-size: 1.4rem; /* Slightly smaller to accommodate the spacing */
+  font-size: 1.4rem;
   font-weight: 700;
-  letter-spacing: 2.5px; /* Boosted spacing significantly */
+  letter-spacing: 2.5px;
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.15);
 }
 
@@ -54,7 +54,7 @@ body {
 .focus-text-details h2 {
   font-family: "Playfair Display", serif;
   font-weight: 700;
-  letter-spacing: 1.5px; /* Added tracking to secondary headers */
+  letter-spacing: 1.5px;
   color: var(--monica-purple);
 }
 
@@ -64,9 +64,10 @@ body {
 .lock-screen-container {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start; /* Pushes card upwards */
   min-height: 100vh;
-  padding: 10px;
+  padding: 20px;
+  padding-top: 12vh; /* Precise vertical positioning */
   background-color: var(--central-perk-grey);
 }
 
@@ -109,30 +110,22 @@ body {
   margin-bottom: 20px;
   outline: none;
   font-weight: 700;
-
-  /* THE SECRET SAUCE: As you type, the security dots turn purple */
   color: var(--monica-purple);
   -webkit-text-fill-color: var(--monica-purple);
-
-  transition:
-    box-shadow 0.2s ease,
-    border-color 0.2s ease;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
-/* THE PLACEHOLDER ENGINE: Forces the blank placeholder dots to stay Yellow */
 .lock-box input::placeholder {
   color: var(--peephole-yellow) !important;
   -webkit-text-fill-color: var(--peephole-yellow) !important;
-  opacity: 1; /* Prevents mobile browsers from fading the yellow out */
+  opacity: 1;
 }
 
 .lock-box input:focus {
   border-color: var(--monica-purple);
-  /* Interactive glow effect using your purple */
   box-shadow: 0 0 0 4px rgba(111, 82, 163, 0.15);
 }
 
-/* Enhances the error placeholder state if code is incorrect */
 .lock-box input.error-shake {
   border-color: var(--error-color) !important;
   box-shadow: 0 0 0 4px rgba(217, 83, 79, 0.2) !important;
@@ -161,6 +154,23 @@ body {
 }
 
 /* ========================================================
+   VIEW STRUCTURAL LAYOUT PANELS
+   ======================================================== */
+.view-panel {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+#form-view:not(.hidden) {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* ========================================================
    FLOATING ACTION BUTTON (FAB) ENGINE - REFINED CONCRETE
    ======================================================== */
 .fab-add-btn {
@@ -170,19 +180,12 @@ body {
   width: 56px;
   height: 56px;
   border-radius: 50%;
-
-  /* Lighter, warm stone grey gives the purple room to breathe */
   background-color: #d8d6e0;
-  border: 1px solid rgba(111, 82, 163, 0.15); /* Soft purple border to tie it together */
-
-  /* Plus symbol matches the header brand purple sharply */
+  border: 1px solid rgba(111, 82, 163, 0.15);
   color: var(--monica-purple);
-
-  /* Clean, crisp drop shadow beneath the text symbol */
-  text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.6); /* Soft light backing to sharpen it */
-
+  text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.6);
   font-size: 2.2rem;
-  font-weight: 700; /* Made slightly thicker to maximize visibility */
+  font-weight: 700;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -190,13 +193,11 @@ body {
   box-shadow: 0 4px 12px rgba(45, 42, 50, 0.15);
   z-index: 90;
   pointer-events: auto !important;
-  transition:
-    transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-    background-color 0.2s;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.2s;
 }
 
 .fab-add-btn:hover {
-  background-color: #cbcae3; /* Slightly richer tint on hover */
+  background-color: #cbcae3;
   transform: scale(1.05);
 }
 
@@ -204,12 +205,7 @@ body {
   transform: scale(0.95);
 }
 
-/* Ensure the layout grid has a little breathing room at the bottom so cards don't get hidden behind the FAB */
-.gallery-grid {
-  padding-bottom: 90px !important;
-}
-
-/* Profile Dropdown Trigger */
+/* Profile Dropdown Component */
 .profile-trigger {
   background: rgba(255, 255, 255, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.25);
@@ -263,32 +259,25 @@ body {
   padding: 20px;
   max-width: 1000px;
   margin: 0 auto;
+  padding-bottom: 90px !important; /* Safety gap below cards */
 }
 
-/* ========================================================
-   MAIN GALLERY CATALOG & THUMBNAILS - TINTED FRAMING
-   ======================================================== */
 .keychain-card {
   background: var(--petal-white);
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
   cursor: pointer;
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease,
-    border-color 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   display: flex;
   flex-direction: column;
-
-  /* Subtle theme alignment: 1px border using your purple at 12% opacity */
-  border: 2px solid rgba(111, 82, 163, 0.35);
+  border: 2px solid rgba(111, 82, 163, 0.35); /* Solid 35% Visible Border */
 }
 
 .keychain-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 6px 14px rgba(111, 82, 163, 0.15);
-  border-color: rgba(111, 82, 163, 0.35); /* Sharpens up when interactive */
+  border-color: var(--monica-purple);
 }
 
 .card-img {
@@ -370,7 +359,6 @@ body {
   border-color: var(--monica-purple);
 }
 
-/* Segmented Date Picker Toggles */
 .date-toggle-group {
   display: flex;
   gap: 4px;
@@ -399,7 +387,6 @@ body {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
-/* File Camera Capture Frame Uploader */
 .custom-file-upload {
   display: block;
   text-align: center;
@@ -442,18 +429,17 @@ body {
 }
 
 .primary-btn {
-  background: var(--monica-purple);
+  background-color: var(--monica-purple);
   color: var(--petal-white);
 }
 
 .secondary-btn {
-  background: var(--central-perk-grey);
-  color: #666;
-  border: 2px solid #eaeaea;
+  background-color: var(--central-perk-grey);
+  color: var(--rich-charcoal);
 }
 
 /* ========================================================
-   FOCUSED DETAIL MODAL POPUP - BOLD TOP ACCENT
+   DETAIL CARD MODAL FOCUS VIEW
    ======================================================== */
 .focus-modal {
   position: fixed;
@@ -478,74 +464,16 @@ body {
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   animation: modalPop 0.25s ease-out;
-
-  /* High hierarchy statement: Solid purple anchor on the focused element */
-  border-top: 4px solid var(--monica-purple);
-  margin-top: 24px;
-}
-
-@keyframes modalPop {
-  from {
-    transform: scale(0.92);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-#focusImage {
-  width: 100%;
-  max-height: 340px;
-  object-fit: cover;
-  background-color: #fafafa;
-}
-
-.focus-text-details {
-  padding: 24px;
-}
-
-.focus-text-details h2 {
-  font-size: 1.4rem;
-  color: var(--monica-purple);
-  margin-bottom: 6px;
-}
-
-#focusLocation {
-  font-weight: 600;
-  color: #555;
-  margin-bottom: 4px;
-  font-size: 0.95rem;
-}
-
-#focusDate {
-  font-size: 0.85rem;
-  color: #888;
-  margin-bottom: 15px;
-}
-
-.focus-notes-box {
-  background: var(--central-perk-grey);
-  padding: 14px;
-  border-radius: 16px;
-  font-style: italic;
-  font-size: 0.95rem;
-  line-height: 1.4;
-  color: #444;
-  border-left: 4px solid var(--monica-purple);
+  border-top: 4px solid var(--monica-purple); /* Option 3 Accent Top Line */
+  margin-top: 24px; /* Added padding space beneath close badge */
 }
 
 .focus-close {
   position: absolute;
   top: 20px;
   right: 20px;
-  font-size: 1.8rem; /* Slightly balanced down from 2.5rem to match the circular base */
-
-  /* TURNED PURPLE: Matches your branding color */
+  font-size: 1.8rem;
   color: var(--monica-purple);
-
-  /* Adds a soft background badge so it pops beautifully over the dark backdrop overlay */
   background: var(--petal-white);
   width: 40px;
   height: 40px;
@@ -554,13 +482,44 @@ body {
   justify-content: center;
   align-items: center;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-
   cursor: pointer;
   transition: transform 0.15s ease;
 }
 
 .focus-close:hover {
   transform: scale(1.08);
+}
+
+#focusImage {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+}
+
+.focus-text-details {
+  padding: 20px;
+}
+
+.focus-text-details h2 {
+  font-size: 1.5rem;
+  margin-bottom: 8px;
+}
+
+.focus-text-details p {
+  font-size: 0.95rem;
+  margin-bottom: 6px;
+  color: #555;
+}
+
+.focus-notes-box {
+  background: var(--central-perk-grey);
+  padding: 12px;
+  border-radius: 12px;
+  font-style: italic;
+  margin-top: 14px;
+  font-size: 0.9rem;
+  color: #444;
+  border-left: 3px solid var(--monica-purple);
 }
 
 .danger-link-btn {
@@ -572,15 +531,13 @@ body {
   font-size: 0.9rem;
 }
 
-.error-message {
-  color: var(--error-color);
-  font-weight: 600;
-  font-size: 0.85rem;
-  margin-top: 10px;
+@keyframes modalPop {
+  from { transform: scale(0.92); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }
 
 /* ========================================================
-   FRIENDS DOTS HORIZONTAL FADE REVEAL ENGINE
+   LOADING ANIMATION DYNAMICS
    ======================================================== */
 .loading-container {
   grid-column: 1 / -1;
@@ -591,56 +548,30 @@ body {
 .friends-dots {
   display: flex;
   justify-content: center;
-  align-items: center;
-  gap: 12px;
+  gap: 8px;
   margin-bottom: 15px;
 }
 
 .dot {
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  display: inline-block;
-  animation: friendsFadeReveal 1.2s linear infinite;
+  animation: dotJump 0.6s infinite alternate;
 }
 
-/* Staggered left-to-right delays */
-.dot-red {
-  background-color: var(--friends-red);
-  animation-delay: 0s;
-}
-.dot-blue {
-  background-color: var(--friends-blue);
-  animation-delay: 0.2s;
-}
-.dot-red2 {
-  background-color: var(--friends-red);
-  animation-delay: 0.4s;
-}
-.dot-yellow {
-  background-color: var(--friends-yellow);
-  animation-delay: 0.6s;
-}
-.dot-blue2 {
-  background-color: var(--friends-blue);
-  animation-delay: 0.8s;
+.dot-red    { background-color: var(--friends-red); animation-delay: 0s; }
+.dot-blue   { background-color: var(--friends-blue); animation-delay: 0.1s; }
+.dot-red2   { background-color: var(--friends-red); animation-delay: 0.2s; }
+.dot-yellow { background-color: var(--friends-yellow); animation-delay: 0.3s; }
+.dot-blue2  { background-color: var(--friends-blue); animation-delay: 0.4s; }
+
+@keyframes dotJump {
+  from { transform: translateY(0); }
+  to { transform: translateY(-10px); }
 }
 
 .loading-label {
   font-size: 0.95rem;
   font-weight: 600;
-  color: var(--monica-purple);
-  letter-spacing: 0.5px;
-}
-
-@keyframes friendsFadeReveal {
-  0%,
-  100% {
-    opacity: 0.15;
-    transform: scale(0.9);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.1);
-  }
+  color: #666;
 }
