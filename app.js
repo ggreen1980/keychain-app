@@ -1,3 +1,13 @@
+// ========================================================
+// REPO CONFIGURATION & CLOUD APIS
+// ========================================================
+const API_URL =
+  "https://script.google.com/macros/s/AKfycbxPoyWNVcpBaFSJmTm1BoZTd01EfouS13emZPQ2lJvCK5MyW8zMlgQ-0LyYCWU85KFjOw/exec";
+
+const CORRECT_PASSCODE = "4177";
+const CLOUDINARY_CLOUD_NAME = "xzpkydjm";
+const CLOUDINARY_PRESET = "keychain_preset";
+
 let localImageFileBlob = null;
 let activeDateMode = "today";
 
@@ -75,7 +85,6 @@ function checkPasscode(input, lockView, appView, errorView) {
 // PROFILE MENU DROPDOWN INTERACTION
 // ========================================================
 function initProfileDropdown() {
-  // Corrected IDs to match your HTML anchors
   const trigger = document.getElementById("profile-menu-btn");
   const content = document.getElementById("profile-menu-content");
 
@@ -108,16 +117,25 @@ function initDateToggleControl() {
     btnToday.classList.remove("active");
     btnCustom.classList.remove("active");
     btnUnknown.classList.remove("active");
+
     if (customContainer) customContainer.style.display = "none";
 
     if (mode === "today") {
       btnToday.classList.add("active");
+      if (dateInput) {
+        const today = new Date();
+        dateInput.value = today.toISOString().split("T")[0];
+      }
     } else if (mode === "custom") {
       btnCustom.classList.add("active");
       if (customContainer) customContainer.style.display = "block";
-      if (dateInput && !dateInput.value) dateInput.valueAsDate = new Date();
+      if (dateInput && !dateInput.value) {
+        const today = new Date();
+        dateInput.value = today.toISOString().split("T")[0];
+      }
     } else if (mode === "unknown") {
       btnUnknown.classList.add("active");
+      if (dateInput) dateInput.value = "";
     }
   }
 
@@ -212,6 +230,8 @@ function initNavigationAndForm() {
           return;
         }
         dateFinalString = selectedCustomDate;
+      } else if (activeDateMode === "unknown") {
+        dateFinalString = "Unknown";
       }
 
       formSubmitBtn.disabled = true;
