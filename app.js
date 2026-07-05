@@ -111,7 +111,9 @@ function initDateToggleControl() {
     btnCustom.classList.remove("active");
     btnUnknown.classList.remove("active");
 
-    if (customContainer) customContainer.style.display = "none";
+    if (customContainer) {
+      customContainer.style.setProperty("display", "none", "important");
+    }
 
     if (mode === "today") {
       btnToday.classList.add("active");
@@ -121,7 +123,9 @@ function initDateToggleControl() {
       }
     } else if (mode === "custom") {
       btnCustom.classList.add("active");
-      if (customContainer) customContainer.style.display = "block";
+      if (customContainer) {
+        customContainer.style.setProperty("display", "block", "important");
+      }
       if (dateInput && !dateInput.value) {
         const today = new Date();
         dateInput.value = today.toISOString().split("T")[0];
@@ -143,7 +147,7 @@ function initDateToggleControl() {
 function initNavigationAndForm() {
   const galleryView = document.getElementById("gallery-view");
   const formView = document.getElementById("form-view");
-  const addButton = document.getElementById("add-btn"); // Aligned with index.html ID
+  const addButton = document.getElementById("add-btn");
   const formCancelBtn = document.getElementById("form-cancel-btn");
   const formSubmitBtn = document.getElementById("form-submit-btn");
   const fileInput = document.getElementById("input-file");
@@ -155,16 +159,13 @@ function initNavigationAndForm() {
       if (galleryView) galleryView.classList.add("hidden");
       if (formView) formView.classList.remove("hidden");
 
-      // FORCE BUTTON RESET: Text matches perfectly upon opening the view panel
       if (formSubmitBtn) {
         formSubmitBtn.disabled = false;
         formSubmitBtn.innerText = "Save to Catalog";
       }
 
-      // Hide the add button so it doesn't float over the input cards
       addButton.classList.add("hidden");
 
-      // Reset selection defaults
       const todayBtn = document.getElementById("date-mode-today");
       if (todayBtn) todayBtn.click();
     });
@@ -178,10 +179,8 @@ function initNavigationAndForm() {
       if (formView) formView.classList.add("hidden");
       if (galleryView) galleryView.classList.remove("hidden");
 
-      // Restore floating visibility
       if (addButton) addButton.classList.remove("hidden");
 
-      // CLEANUP LABEL: Prevent layout mismatch indicators
       if (formSubmitBtn) {
         formSubmitBtn.disabled = false;
         formSubmitBtn.innerText = "Save to Catalog";

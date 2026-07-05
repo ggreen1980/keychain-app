@@ -39,7 +39,7 @@ body {
 }
 
 /* ========================================================
-   THEMED TYPOGRAPHY HIERARCHY (OPTION 1: SPACED SERIF)
+   THEMED TYPOGRAPHY HIERARCHY
    ======================================================== */
 .header-logo h1 {
   font-family: "Playfair Display", serif;
@@ -112,7 +112,9 @@ body {
   font-weight: 700;
   color: var(--monica-purple);
   -webkit-text-fill-color: var(--monica-purple);
-  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  transition:
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .lock-box input::placeholder {
@@ -171,7 +173,7 @@ body {
 }
 
 /* ========================================================
-   FLOATING ACTION BUTTON (FAB) ENGINE
+   FLOATING ACTION BUTTON (FAB)
    ======================================================== */
 .fab-add-btn {
   position: fixed;
@@ -193,7 +195,9 @@ body {
   box-shadow: 0 4px 12px rgba(45, 42, 50, 0.15);
   z-index: 90;
   pointer-events: auto !important;
-  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.2s;
+  transition:
+    transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    background-color 0.2s;
 }
 
 .fab-add-btn:hover {
@@ -268,7 +272,10 @@ body {
   overflow: hidden;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
   display: flex;
   flex-direction: column;
   border: 2px solid rgba(111, 82, 163, 0.35);
@@ -344,7 +351,6 @@ body {
 }
 
 .form-group input[type="text"],
-.form-group input[type="date"],
 .form-group textarea {
   width: 100%;
   padding: 12px;
@@ -354,7 +360,6 @@ body {
   outline: none;
 }
 .form-group input[type="text"]:focus,
-.form-group input[type="date"]:focus,
 .form-group textarea:focus {
   border-color: var(--monica-purple);
 }
@@ -385,6 +390,32 @@ body {
   background: var(--petal-white);
   color: var(--monica-purple);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* Integrated Custom Date Picker Styles */
+#custom-date-container {
+  width: 100%;
+  margin-top: 12px;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.form-group input[type="date"] {
+  width: 100%;
+  padding: 12px;
+  border-radius: 16px;
+  border: 2px solid #eaeaea;
+  font-size: 0.95rem;
+  font-family: inherit;
+  color: var(--rich-charcoal);
+  background-color: var(--petal-white);
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.form-group input[type="date"]:focus {
+  border-color: var(--monica-purple);
+  box-shadow: 0 0 0 3px rgba(111, 82, 163, 0.1);
 }
 
 .custom-file-upload {
@@ -439,7 +470,7 @@ body {
 }
 
 /* ========================================================
-   DETAIL CARD MODAL FOCUS VIEW
+   REPAIRED DETAIL CARD MODAL FOCUS VIEW
    ======================================================== */
 .focus-modal {
   position: fixed;
@@ -447,13 +478,14 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(45, 42, 50, 0.85);
+  background: rgba(45, 42, 50, 0.7);
   backdrop-filter: blur(4px);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 200;
   padding: 16px;
+  overflow-y: auto;
 }
 
 .focus-card-content {
@@ -463,24 +495,101 @@ body {
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  animation: modalPop 0.25s ease-out;
+  position: relative;
   border-top: 4px solid var(--monica-purple);
-  margin-top: 24px;
+  margin: auto;
+}
+
+#focusImage {
+  width: 100%;
+  max-height: 320px;
+  object-fit: cover;
+  background-color: #fafafa;
+  display: block;
+}
+
+.focus-text-details {
+  padding: 24px;
+}
+
+.focus-text-details h2 {
+  font-size: 1.4rem;
+  margin-bottom: 8px;
+}
+
+.focus-text-details p {
+  font-size: 0.95rem;
+  color: #555;
+  margin-bottom: 6px;
+}
+
+.focus-notes-box {
+  background-color: #f9f8fc;
+  border-left: 3px solid var(--monica-purple);
+  padding: 12px;
+  font-style: italic;
+  font-size: 0.9rem;
+  color: #444;
+  margin-top: 14px;
+  border-radius: 0 12px 12px 0;
+  line-height: 1.4;
 }
 
 .focus-close {
   position: absolute;
-  top: 20px;
-  right: 20px;
-  font-size: 1.8rem;
-  color: var(--monica-purple);
-  background: var(--petal-white);
-  width: 40px;
-  height: 40px;
+  top: 12px;
+  right: 12px;
+  font-size: 1.6rem;
+  color: var(--rich-charcoal);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(2px);
+  width: 36px;
+  height: 36px;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 50%;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  z-index: 210;
+  transition: background 0.2s;
+}
+
+.focus-close:hover {
+  background: #ffffff;
+  color: var(--friends-red);
+}
+
+.danger-link-btn {
+  background: none;
+  border: none;
+  color: var(--error-color);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+}
+
+.danger-link-btn:hover {
+  background-color: #fff5f5;
+  text-decoration: underline;
+}
+
+.danger-link-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Base animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
