@@ -111,7 +111,6 @@ function initDateToggleControl() {
     btnCustom.classList.remove("active");
     btnUnknown.classList.remove("active");
 
-    // Enforce base state reset cleanly via utility classes
     if (customContainer) {
       customContainer.classList.add("hidden");
     }
@@ -127,9 +126,18 @@ function initDateToggleControl() {
       if (customContainer) {
         customContainer.classList.remove("hidden");
       }
-      if (dateInput && !dateInput.value) {
-        const today = new Date();
-        dateInput.value = today.toISOString().split("T")[0];
+      if (dateInput) {
+        // Clear value so it doesn't freeze on today's date text
+        dateInput.value = "";
+        // Focus and attempt to pop open the native date picker overlay immediately
+        setTimeout(() => {
+          dateInput.focus();
+          if (typeof dateInput.showPicker === "function") {
+            dateInput.showPicker();
+          } else {
+            dateInput.click();
+          }
+        }, 50);
       }
     } else if (mode === "unknown") {
       btnUnknown.classList.add("active");
