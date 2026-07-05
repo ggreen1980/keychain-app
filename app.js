@@ -111,8 +111,9 @@ function initDateToggleControl() {
     btnCustom.classList.remove("active");
     btnUnknown.classList.remove("active");
 
+    // Enforce base state reset cleanly via utility classes
     if (customContainer) {
-      customContainer.style.setProperty("display", "none", "important");
+      customContainer.classList.add("hidden");
     }
 
     if (mode === "today") {
@@ -124,7 +125,7 @@ function initDateToggleControl() {
     } else if (mode === "custom") {
       btnCustom.classList.add("active");
       if (customContainer) {
-        customContainer.style.setProperty("display", "block", "important");
+        customContainer.classList.remove("hidden");
       }
       if (dateInput && !dateInput.value) {
         const today = new Date();
