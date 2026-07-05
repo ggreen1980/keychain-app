@@ -140,26 +140,25 @@ function initDateToggleControl() {
 function initNavigationAndForm() {
   const galleryView = document.getElementById("gallery-view");
   const formView = document.getElementById("form-view");
-  const addBtn = document.getElementById("add-btn");
-
+  const navAddBtn = document.getElementById("nav-add-btn"); // Correct variable name matched here
   const formCancelBtn = document.getElementById("form-cancel-btn");
   const formSubmitBtn = document.getElementById("form-submit-btn");
   const fileInput = document.getElementById("input-file");
   const imagePreview = document.getElementById("image-preview");
   const keychainForm = document.getElementById("keychain-form");
 
-  if (addBtn) {
-    addBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-
-      if (formView) formView.classList.remove("hidden");
+  if (navAddBtn) {
+    navAddBtn.addEventListener("click", () => {
       if (galleryView) galleryView.classList.add("hidden");
+      if (formView) formView.classList.remove("hidden");
 
-      setTimeout(() => {
-        addBtn.classList.add("hidden");
-      }, 50);
+      // FORCE BUTTON RESET: Ensures text is clean every time the form opens
+      if (formSubmitBtn) {
+        formSubmitBtn.disabled = false;
+        formSubmitBtn.innerText = "Save to Catalog";
+      }
 
+      // Automatically trigger the 'Today' layout switcher logic
       const todayBtn = document.getElementById("date-mode-today");
       if (todayBtn) todayBtn.click();
     });
@@ -173,7 +172,11 @@ function initNavigationAndForm() {
       if (formView) formView.classList.add("hidden");
       if (galleryView) galleryView.classList.remove("hidden");
 
-      if (addBtn) addBtn.classList.remove("hidden");
+      // FORCE BUTTON RESET: Cleans up text on cancel
+      if (formSubmitBtn) {
+        formSubmitBtn.disabled = false;
+        formSubmitBtn.innerText = "Save to Catalog";
+      }
     });
   }
 
@@ -185,8 +188,9 @@ function initNavigationAndForm() {
       localImageFileBlob = file;
       const reader = new FileReader();
       reader.onload = (e) => {
-        if (imagePreview)
+        if (imagePreview) {
           imagePreview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+        }
       };
       reader.readAsDataURL(file);
     });
@@ -208,6 +212,7 @@ function initNavigationAndForm() {
         return;
       }
 
+      // Calculate final string based on active selection mode
       let dateFinalString = "Unknown";
       if (activeDateMode === "today") {
         const today = new Date();
@@ -224,30 +229,33 @@ function initNavigationAndForm() {
         dateFinalString = "Unknown";
       }
 
+      if (!localImageFileBlob) {
+        alert("Please take or select a photo of the keychain first!");
+        return;
+      }
+
+      // Now it's safe to change the text and disable the button
       formSubmitBtn.disabled = true;
-      formSubmitBtn.innerText = "Processing Data... ⏳";
+      formSubmitBtn.innerText = "Uploading Photo... 📸";
 
       try {
         let secureCDNImageUrl = "";
 
-        if (localImageFileBlob) {
-          formSubmitBtn.innerText = "Uploading Photo... 📸";
-          const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
-          const formData = new FormData();
-          formData.append("file", localImageFileBlob);
-          formData.append("upload_preset", CLOUDINARY_PRESET);
+        const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
+        const formData = new FormData();
+        formData.append("file", localImageFileBlob);
+        formData.append("upload_preset", CLOUDINARY_PRESET);
 
-          const cloudResponse = await fetch(cloudinaryUrl, {
-            method: "POST",
-            body: formData,
-          });
-          if (!cloudResponse.ok)
-            throw new Error("Cloudinary media upload failed");
-          const cloudData = await cloudResponse.json();
-          secureCDNImageUrl = cloudData.secure_url;
-        }
+        const cloudResponse = await fetch(cloudinaryUrl, {
+          method: "POST",
+          body: formData,
+        });
+        if (!cloudResponse.ok)
+          throw new Error("Cloudinary media upload failed");
+        const cloudData = await cloudResponse.json();
+        secureCDNImageUrl = cloudData.secure_url;
 
-        formSubmitBtn.innerText = "Saving to collection... ☁️";
+        formSubmitBtn.innerText = "Saving to catalog... ☁️";
 
         const payload = {
           name: name,
@@ -265,21 +273,19 @@ function initNavigationAndForm() {
           body: JSON.stringify(payload),
         });
 
-        alert("Success! Keychain catalog updated.");
+        alert("Success! Keychain saved into our travel catalog.");
         if (keychainForm) keychainForm.reset();
         if (imagePreview) imagePreview.innerHTML = "";
         localImageFileBlob = null;
         if (formView) formView.classList.add("hidden");
         if (galleryView) galleryView.classList.remove("hidden");
-
-        if (addBtn) addBtn.classList.remove("hidden");
-
         loadGalleryData();
       } catch (err) {
         console.error(err);
         alert(
-          "Process stopped. Storage update sequence encountered a pipeline error.",
+          "Process stopped. Image hosting pipeline or sheet storage failed.",
         );
+      } finally {
         formSubmitBtn.disabled = false;
         formSubmitBtn.innerText = "Save to Catalog";
       }
