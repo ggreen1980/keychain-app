@@ -64,10 +64,10 @@ body {
 .lock-screen-container {
   display: flex;
   justify-content: center;
-  align-items: flex-start; /* Pushes card upwards */
+  align-items: flex-start;
   min-height: 100vh;
   padding: 20px;
-  padding-top: 12vh; /* Precise vertical positioning */
+  padding-top: 12vh;
   background-color: var(--central-perk-grey);
 }
 
@@ -171,7 +171,7 @@ body {
 }
 
 /* ========================================================
-   FLOATING ACTION BUTTON (FAB) ENGINE - REFINED CONCRETE
+   FLOATING ACTION BUTTON (FAB) ENGINE
    ======================================================== */
 .fab-add-btn {
   position: fixed;
@@ -259,7 +259,7 @@ body {
   padding: 20px;
   max-width: 1000px;
   margin: 0 auto;
-  padding-bottom: 90px !important; /* Safety gap below cards */
+  padding-bottom: 90px !important;
 }
 
 .keychain-card {
@@ -271,7 +271,7 @@ body {
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   display: flex;
   flex-direction: column;
-  border: 2px solid rgba(111, 82, 163, 0.35); /* Solid 35% Visible Border */
+  border: 2px solid rgba(111, 82, 163, 0.35);
 }
 
 .keychain-card:hover {
@@ -464,8 +464,8 @@ body {
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   animation: modalPop 0.25s ease-out;
-  border-top: 4px solid var(--monica-purple); /* Option 3 Accent Top Line */
-  margin-top: 24px; /* Added padding space beneath close badge */
+  border-top: 4px solid var(--monica-purple);
+  margin-top: 24px;
 }
 
 .focus-close {
@@ -477,101 +477,10 @@ body {
   background: var(--petal-white);
   width: 40px;
   height: 40px;
-  border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
-  transition: transform 0.15s ease;
-}
-
-.focus-close:hover {
-  transform: scale(1.08);
-}
-
-#focusImage {
-  width: 100%;
-  max-height: 300px;
-  object-fit: cover;
-}
-
-.focus-text-details {
-  padding: 20px;
-}
-
-.focus-text-details h2 {
-  font-size: 1.5rem;
-  margin-bottom: 8px;
-}
-
-.focus-text-details p {
-  font-size: 0.95rem;
-  margin-bottom: 6px;
-  color: #555;
-}
-
-.focus-notes-box {
-  background: var(--central-perk-grey);
-  padding: 12px;
-  border-radius: 12px;
-  font-style: italic;
-  margin-top: 14px;
-  font-size: 0.9rem;
-  color: #444;
-  border-left: 3px solid var(--monica-purple);
-}
-
-.danger-link-btn {
-  background: none;
-  border: none;
-  color: var(--error-color);
-  font-weight: 600;
-  cursor: pointer;
-  font-size: 0.9rem;
-}
-
-@keyframes modalPop {
-  from { transform: scale(0.92); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-
-/* ========================================================
-   LOADING ANIMATION DYNAMICS
-   ======================================================== */
-.loading-container {
-  grid-column: 1 / -1;
-  text-align: center;
-  padding: 60px 20px;
-}
-
-.friends-dots {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 15px;
-}
-
-.dot {
-  width: 10px;
-  height: 10px;
   border-radius: 50%;
-  animation: dotJump 0.6s infinite alternate;
-}
-
-.dot-red    { background-color: var(--friends-red); animation-delay: 0s; }
-.dot-blue   { background-color: var(--friends-blue); animation-delay: 0.1s; }
-.dot-red2   { background-color: var(--friends-red); animation-delay: 0.2s; }
-.dot-yellow { background-color: var(--friends-yellow); animation-delay: 0.3s; }
-.dot-blue2  { background-color: var(--friends-blue); animation-delay: 0.4s; }
-
-@keyframes dotJump {
-  from { transform: translateY(0); }
-  to { transform: translateY(-10px); }
-}
-
-.loading-label {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #666;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }

@@ -1,3 +1,6 @@
+// ========================================================
+// REPO STATE & MEMORY MODULES
+// ========================================================
 let localImageFileBlob = null;
 let activeDateMode = "today";
 
@@ -140,25 +143,28 @@ function initDateToggleControl() {
 function initNavigationAndForm() {
   const galleryView = document.getElementById("gallery-view");
   const formView = document.getElementById("form-view");
-  const navAddBtn = document.getElementById("nav-add-btn"); // Correct variable name matched here
+  const addButton = document.getElementById("add-btn"); // Aligned with index.html ID
   const formCancelBtn = document.getElementById("form-cancel-btn");
   const formSubmitBtn = document.getElementById("form-submit-btn");
   const fileInput = document.getElementById("input-file");
   const imagePreview = document.getElementById("image-preview");
   const keychainForm = document.getElementById("keychain-form");
 
-  if (navAddBtn) {
-    navAddBtn.addEventListener("click", () => {
+  if (addButton) {
+    addButton.addEventListener("click", () => {
       if (galleryView) galleryView.classList.add("hidden");
       if (formView) formView.classList.remove("hidden");
 
-      // FORCE BUTTON RESET: Ensures text is clean every time the form opens
+      // FORCE BUTTON RESET: Text matches perfectly upon opening the view panel
       if (formSubmitBtn) {
         formSubmitBtn.disabled = false;
         formSubmitBtn.innerText = "Save to Catalog";
       }
 
-      // Automatically trigger the 'Today' layout switcher logic
+      // Hide the add button so it doesn't float over the input cards
+      addButton.classList.add("hidden");
+
+      // Reset selection defaults
       const todayBtn = document.getElementById("date-mode-today");
       if (todayBtn) todayBtn.click();
     });
@@ -172,7 +178,10 @@ function initNavigationAndForm() {
       if (formView) formView.classList.add("hidden");
       if (galleryView) galleryView.classList.remove("hidden");
 
-      // FORCE BUTTON RESET: Cleans up text on cancel
+      // Restore floating visibility
+      if (addButton) addButton.classList.remove("hidden");
+
+      // CLEANUP LABEL: Prevent layout mismatch indicators
       if (formSubmitBtn) {
         formSubmitBtn.disabled = false;
         formSubmitBtn.innerText = "Save to Catalog";
@@ -212,7 +221,6 @@ function initNavigationAndForm() {
         return;
       }
 
-      // Calculate final string based on active selection mode
       let dateFinalString = "Unknown";
       if (activeDateMode === "today") {
         const today = new Date();
@@ -234,7 +242,6 @@ function initNavigationAndForm() {
         return;
       }
 
-      // Now it's safe to change the text and disable the button
       formSubmitBtn.disabled = true;
       formSubmitBtn.innerText = "Uploading Photo... 📸";
 
@@ -279,6 +286,8 @@ function initNavigationAndForm() {
         localImageFileBlob = null;
         if (formView) formView.classList.add("hidden");
         if (galleryView) galleryView.classList.remove("hidden");
+
+        if (addButton) addButton.classList.remove("hidden");
         loadGalleryData();
       } catch (err) {
         console.error(err);
